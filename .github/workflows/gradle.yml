@@ -1,0 +1,65 @@
+name: Java CI & CD
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          
+      ## create application-prod.properties
+      - name: make application.yml
+        run: |
+          cd ./src/main/resources
+          touch ./application.yml
+          echo "${{ secrets.PROPERTIES_FILE }}" > ./application.yml
+        shell: bash
+          
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        
+      - name: Build with Gradle
+        run: ./gradlew bootjar
+        
+#      ## 웹 이미지 빌드 및 도커허브에 push
+#      - name: web docker build and push
+#        run: |
+#          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+#          docker build -t ${{ secrets.DOCKER_REPO }}/filmface ./
+#          docker push ${{ secrets.DOCKER_REPO }}/filmface:latest
+#      - name: Get timestamp
+#        uses: gerred/actions/current-time@master
+#        id: current-time
+#
+#      - name: Run string replace
+#        uses: frabert/replace-string-action@master
+#        id: format-time
+#        with:
+#          pattern: '[:\.]+'
+#          string: "${{ steps.current-time.outputs.time }}"
+#          replace-with: '-'
+#          flags: 'g'
+
+#      - name: Deploy
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.HOST }}
+#          username: ${{ secrets.USERNAME }}
+#          key: ${{ secrets.PRIVATE_KEY }}
+#          script: |
+#            docker pull ${{ secrets.DOCKER_REPO }}/filmface:latest
+#            docker rm -f $(docker ps -a -q)
+#            docker run -d --name filmface -p 8080:8080 ${{ secrets.DOCKER_REPO }}/filmface:latest
