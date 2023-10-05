@@ -1,5 +1,6 @@
-package search.dto;
+package com.allin.filmface.search.dto;
 
+import com.allin.filmface.member.dto.MemberSimpleDTO;
 import lombok.*;
 
 @AllArgsConstructor
@@ -9,9 +10,10 @@ import lombok.*;
 @ToString
 public class SearchDTO {
 
+    private MemberSimpleDTO member;
+
     private int searchNo;
     private int searchAge;
     private int totalNo;
-    private int memberNo;
 
 }
