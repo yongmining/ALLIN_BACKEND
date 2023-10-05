@@ -1,6 +1,10 @@
 package com.allin.filmface.member.controller;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.allin.filmface.common.ResponseDTO;
+import com.allin.filmface.common.paging.Pagenation;
+import com.allin.filmface.common.paging.ResponseDTOWithPaging;
+import com.allin.filmface.common.paging.SelectCriteria;
 import com.allin.filmface.member.dto.MemberDTO;
 import com.allin.filmface.member.dto.MemberSimpleDTO;
 import com.allin.filmface.member.entity.Member;
@@ -8,13 +12,19 @@ import com.allin.filmface.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "멤버 관련 API")
@@ -43,7 +53,7 @@ public class MemberController {
 
     @ApiOperation("멤버No로 멤버조회")
     @GetMapping("/member/{memberNo}")
-    public ResponseEntity<ResponseDTO> findMemberById(@PathVariable long memberNo) {
+    public ResponseEntity<ResponseDTO> findMemberById(@PathVariable int memberNo) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
@@ -56,9 +66,25 @@ public class MemberController {
         return ResponseEntity.ok().headers(headers).body(new ResponseDTO(HttpStatus.OK, "조회성공", responseMap));
     }
 
+    @GetMapping("/members")
+    public ResponseEntity<ResponseDTO> findAllMembers(@PageableDefault Pageable pageable) {
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        Page<MemberDTO> memberPage = memberService.findAllMembers(pageable);
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(memberPage);
+
+        ResponseDTOWithPaging data = new ResponseDTOWithPaging(memberPage.getContent(), selectCriteria);
+
+        return ResponseEntity.ok().headers(headers).body(new ResponseDTO(HttpStatus.OK, "멤버페이지 조회 성공", data));
+    }
+
+
     @ApiOperation("프로필 수정")
     @PutMapping("/member/{memberNo}/profile")
-    public ResponseEntity<ResponseDTO> updateProfile(@PathVariable long memberNo,
+    public ResponseEntity<ResponseDTO> updateProfile(@PathVariable int memberNo,
                                                      @RequestBody MemberSimpleDTO memberSimpleDTO) {
 
         MemberDTO updatedProfile = memberService.updateprofile(memberNo, memberSimpleDTO);
@@ -73,7 +99,7 @@ public class MemberController {
 
 
     @DeleteMapping("/member/{memberNo}")
-    public ResponseEntity<?> deleteMember(@PathVariable long memberNo) {
+    public ResponseEntity<?> deleteMember(@PathVariable int memberNo) {
 
         memberService.deleteMember(memberNo);
 
