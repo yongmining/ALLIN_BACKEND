@@ -6,6 +6,8 @@ import com.allin.filmface.member.entity.Member;
 import com.allin.filmface.member.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,16 +26,23 @@ public class MemberService {
         return memberRepository.save(modelMapper.map(newMember, Member.class)).getMemberNo();
     }
 
+
     //일부 멤버 조회
-    public MemberDTO findMemberById(long memberNo) {
+    public MemberDTO findMemberById(int memberNo) {
 
         Member foundMember = memberRepository.findById(memberNo)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
         return modelMapper.map(foundMember, MemberDTO.class);
     }
 
+
+    public Page<MemberDTO> findAllMembers(Pageable pageable) {
+        Page<Member> memberPage = memberRepository.findAll(pageable);
+        return memberPage.map(member -> modelMapper.map(member, MemberDTO.class));
+    }
+
     @Transactional
-    public MemberDTO updateprofile(long memberNo, MemberSimpleDTO updateMember) {
+    public MemberDTO updateprofile(int memberNo, MemberSimpleDTO updateMember) {
 
         Member member = memberRepository.findById(memberNo)
                  .orElseThrow(() -> new NoSuchElementException("수정 오류가 났습니다. 다시 수정 요청 부탁드립니다."));
@@ -46,7 +55,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(long memberNo) {
+    public void deleteMember(int memberNo) {
 
         Member foundMember = memberRepository.findById(memberNo)
                 .orElseThrow(() -> new NoSuchElementException("회원 정보를 찾을 수 없습니다."));

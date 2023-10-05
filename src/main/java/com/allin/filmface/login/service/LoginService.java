@@ -27,7 +27,7 @@ import java.util.UUID;
 public class LoginService {
     private final MemberService memberService;
 
-//    @Value("${oauth.Kakao.client-id}")
+    @Value("${oauth.Kakao.client-id}")
     private String KAKAO_CLIENT_ID;
 
 
@@ -174,6 +174,6 @@ public class LoginService {
     public String createGuestToken() {
         String guestId = "GUEST_" + System.currentTimeMillis();
 
-        return "your_guest_jwt_token_here";
+        return "게스트 로그인이 되었습니다.";
     }
 }

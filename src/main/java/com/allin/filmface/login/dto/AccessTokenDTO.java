@@ -10,7 +10,7 @@ import lombok.*;
 public class AccessTokenDTO {
 
     private String grantType;
-    private long memberNo;
+    private int memberNo;
     private String accessToken;
     private long accessTokenExpiresIn;
     private String loginType;

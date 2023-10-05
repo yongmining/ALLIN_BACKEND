@@ -8,9 +8,9 @@ import lombok.*;
 @Getter
 @ToString
 public class MemberSimpleDTO {
-    private long memberNo;
+    private int memberNo;
     private String memberNickname;
-    private long memberAge;
+    private int memberAge;
     private String memberGender;
     private String memberImage;
 

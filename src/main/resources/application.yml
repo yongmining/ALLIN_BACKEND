@@ -1,0 +1,54 @@
+         # server port config
+        server:
+          port: 8080
+
+        # mysql driver config
+        spring:
+          datasource:
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            url: jdbc:mysql://192.168.0.58/allin_db
+            username: myeong
+            password: 112233445566778899
+            hikari:
+              auto-commit: false
+
+          devtools:
+            restart:
+              enabled: false
+            livereload:
+              enabled: true #개발 : true 운영 : false
+          freemarker:
+            cache: false #개발 : false 운영 : true
+
+          jpa:
+            generate-ddl: true #개발 : true 운영: false 스키마 자동생성 기능
+            show-sql: true  #개발 : true 운영: false SQL쿼리 출력
+            database: mysql
+            properties:
+              hibernate:
+                '[format_sql]': true #개발 : true 운영: false sql 분석 쉽게
+                hbm2ddl:
+                  auto: update #개발 : update 운영: none
+
+#        aws:
+#          accessKey: AKIA6PF2SY7J7NXQBY6Y
+#          secretAccessKey: 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
+
+        oauth:
+          Kakao:
+            client-id: 23a9d20514279e743aea8c6d1225c1b2
+            url:
+              auth: https://kauth.kakao.com
+              api: https://kapi.kakao.com
+        # mybatis config
+        mybatis:
+          mapper-locations: mybatis/*.xml
+
+#        # aws 설정
+#        # 사용할 S3 bucket region 입력
+#        cloud:
+#          aws:
+#            region:
+#              static: ap-northeast-2
+#            stack:
+#              auto: false
