@@ -33,4 +33,12 @@ public class Pagenation {
         return selectCriteria;
     }
 
+    public static Page<?> createPage(List<?> list, Pageable page) {
+
+        int start = page.getPageNumber() * page.getPageSize();
+        int end = Math.min(start + page.getPageSize(), list.size());
+
+        return new PageImpl<>(list.subList(start, end), page, list.size());
+    }
+
 }
