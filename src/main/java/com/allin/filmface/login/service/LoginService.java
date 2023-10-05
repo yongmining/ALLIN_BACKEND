@@ -27,7 +27,7 @@ import java.util.UUID;
 public class LoginService {
     private final MemberService memberService;
 
-    @Value("${oauth.Kakao.client-id}")
+//    @Value("${oauth.Kakao.client-id}")
     private String KAKAO_CLIENT_ID;
 
 
