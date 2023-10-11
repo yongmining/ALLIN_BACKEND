@@ -1,6 +1,6 @@
 package com.allin.filmface.aiSuggesion.entity;
 
-import com.allin.filmface.choiceContents.youtube.entity.Youtube;
+
 import com.allin.filmface.member.entity.Member;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -22,10 +22,10 @@ public class aiSuggetion {
     @Comment("추천번호")
     private int totalNo;
 
-    @ManyToOne
-    @JoinColumn
-    @Comment("유튜브 번호")
-    private Youtube youtube;
+//    @ManyToOne
+//    @JoinColumn
+//    @Comment("유튜브 번호")
+//    private Youtube youtube;
 
 
 //    @ManyToOne
@@ -49,8 +49,8 @@ public class aiSuggetion {
 //    private Youtube youtube;
 //
 
-    @ManyToOne
-    @JoinColumn(name= "MEMBER_NO", referencedColumnName = "MEMBER_NO" )
-    @Comment("멤버아이디")
-    private Member member;
+//    @ManyToOne
+//    @JoinColumn(name= "MEMBER_NO", referencedColumnName = "MEMBER_NO" )
+//    @Comment("멤버아이디")
+//    private Member member;
 }

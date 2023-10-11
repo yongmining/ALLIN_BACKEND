@@ -17,4 +17,5 @@ public class FeedbackDTO {
     private int feedbackStar;
     private MemberSimpleDTO member;
 
+
 }
