@@ -55,6 +55,10 @@ public class FeedbackService {
     // 피드백 작성
     @Transactional
     public FeedbackDTO createFeedback(FeedbackDTO newFeedback) {
+        if (newFeedback.getMember() == null) {
+            throw new IllegalArgumentException("Feedback의 회원 정보가 제공되지 않았습니다.");
+        }
+
         Member member = memberRepository.findById(newFeedback.getMember().getMemberNo())
                 .orElseThrow(() -> new IllegalArgumentException("회원 번호가 유효하지 않습니다."));
 
