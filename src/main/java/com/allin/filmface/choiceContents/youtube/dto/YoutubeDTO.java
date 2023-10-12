@@ -1,6 +1,6 @@
 package com.allin.filmface.choiceContents.youtube.dto;
 
-import com.allin.filmface.emotion.dto.EmotionDTO;
+import com.allin.filmface.search.dto.SearchDTO;
 import lombok.*;
 
 import java.util.List;
@@ -16,10 +16,9 @@ public class YoutubeDTO {
 
     private  String youtubeLink;
 
-    private  int youtubeViews;
 
     private String youtubeTitle;
 
-    private List<EmotionDTO> emotionResult;
+    private List<SearchDTO> searchNo;
 
 }

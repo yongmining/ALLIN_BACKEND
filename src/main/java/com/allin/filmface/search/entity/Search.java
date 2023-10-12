@@ -1,6 +1,8 @@
 package com.allin.filmface.search.entity;
 
+import com.allin.filmface.emotion.entity.Emotion;
 import com.allin.filmface.member.entity.Member;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
@@ -14,7 +16,7 @@ import javax.persistence.*;
 @ToString
 @Entity(name= "Search")
 @Table(name = "SEARCH")
-public class SearchEntity {
+public class Search {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,14 +24,12 @@ public class SearchEntity {
     @Comment("조회번호")
     private int searchNo;
 
-    @Column(name = "SEARCH_AGE")
-    private int searchAge;
-
-    @Column(name = "TOTAL_NO")
-    private int totalNo;
+    @Column(name = "CONTENT_NO")
+    private int contentNo;
 
     @ManyToOne
-    @JoinColumn(name= "MEMBER_NO", referencedColumnName = "MEMBER_NO" )
-    @Comment("멤버아이디")
-    private Member member;
+    @JoinColumn(name = "EMOTION_NO", referencedColumnName = "EMOTION_NO")
+    @JsonBackReference
+    private Emotion emotion;
+
 }
