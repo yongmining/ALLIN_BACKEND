@@ -1,10 +1,10 @@
-package com.nasigolang.ddbnb;
+package com.allin.filmface;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DeangApplicationTests {
+class FilmfaceApplicationTests {
 
     @Test
     void contextLoads() {

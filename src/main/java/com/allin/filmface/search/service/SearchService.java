@@ -2,7 +2,7 @@
 //
 //import com.allin.filmface.member.repository.MemberRepository;
 //import com.allin.filmface.search.dto.SearchDTO;
-//import com.allin.filmface.search.entity.SearchEntity;
+//import com.allin.filmface.search.entity.Search;
 //import com.allin.filmface.search.repository.SearchRepository;
 //import lombok.AllArgsConstructor;
 //import org.modelmapper.ModelMapper;
@@ -25,7 +25,7 @@
 //        page = PageRequest.of(page.getPageNumber() <= 0 ? 0 : page.getPageNumber() -1, page.getPageSize(),
 //                Sort.by("searchNo"));
 //
-//        Page<SearchEntity> searchs = searchRepository.findByMember(page, memberRepository.findById(memberNo));
+//        Page<Search> searchs = searchRepository.findByMember(page, memberRepository.findById(memberNo));
 //
 //        return searchs.map(search -> modelMapper.map(search, SearchDTO.class));
 //    }
