@@ -77,6 +77,7 @@ public class FeedbackController {
     @ApiOperation("피드백 작성")
     @PostMapping("/feedback")
     public ResponseEntity<ResponseDTO> registNewFeedback(@RequestBody FeedbackDTO newFeedback) {
+        System.out.println("Received Feedback: " + newFeedback.toString());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
