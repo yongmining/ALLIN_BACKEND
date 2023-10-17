@@ -13,7 +13,7 @@ public class EmotionDTO {
 
     private String emotionResult;
 
-    private  String emotionAge;
+    private String emotionAge;
 
     private String emotionGender;
 }
