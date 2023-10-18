@@ -34,12 +34,14 @@
 //
 //    @ApiOperation(value = "조회")
 //    @GetMapping("/search")
-//    public ResponseEntity<ResponseDTO> findAllSearch(@PageableDefault Pageable pageable, @RequestParam int memberNo) {
-//        System.out.println(memberNo);
+//    public ResponseEntity<ResponseDTO> findAllSearchBasedOnEmotion(
+//            @PageableDefault Pageable pageable,
+//            @RequestParam int emotionNo) {
+//
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 //
-//        Page<SearchDTO> searchs = searchService.findAllSearch(pageable, memberNo);
+//        Page<SearchDTO> searchs = searchService.findAllSearchBasedOnEmotion(pageable,emotionNo);
 //
 //        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(searchs);
 //
@@ -47,6 +49,7 @@
 //
 //        return new ResponseEntity<>(new ResponseDTO(HttpStatus.OK, "조회 성공", data), headers, HttpStatus.OK);
 //    }
+//
 //
 //
 //}

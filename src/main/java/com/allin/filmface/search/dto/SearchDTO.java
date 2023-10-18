@@ -1,5 +1,6 @@
 package com.allin.filmface.search.dto;
 
+import com.allin.filmface.emotion.dto.EmotionDTO;
 import com.allin.filmface.member.dto.MemberSimpleDTO;
 import lombok.*;
 
@@ -11,9 +12,11 @@ import lombok.*;
 public class SearchDTO {
 
     private MemberSimpleDTO member;
+    private EmotionDTO emotion;
 
     private int searchNo;
-    private int searchAge;
-    private int totalNo;
+    private int contentNo;
+
+
 
 }
