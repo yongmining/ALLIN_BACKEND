@@ -1,9 +1,7 @@
-package com.allin.filmface.choiceContents.youtube.entity;
+package com.allin.filmface.choiceContents.exercise.entity;
 
-import com.allin.filmface.choiceContents.youtube.dto.YoutubeDTO;
 import com.allin.filmface.emotion.entity.Emotion;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,26 +9,25 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity(name = "Youtube")
-@Table(name = "youtube")
+@Entity(name = "Exercise")
+@Table(name = "exercise")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Youtube {
-
+public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "YOUTUBE_NO")
-    private int youtubeNo;
+    @Column(name = "EXERCISE_NO")
+    private int exerciseNo;
 
-    @Column(name = "YOUTUBE_LINK")
-    private String youtubeLink;
+    @Column(name = "EXERCISE_LINK")
+    private String exerciseLink;
 
 
 
-    @Column(name = "YOUTUBE_TITLE")
-    private String youtubeTitle;
+    @Column(name = "EXERCISE_TITLE")
+    private String exerciseTitle;
 
 
     @ManyToOne
@@ -38,5 +35,4 @@ public class Youtube {
     @JsonBackReference
     private Emotion emotion;
 
-    private Integer memberNo;
 }
