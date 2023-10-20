@@ -1,6 +1,6 @@
 package com.allin.filmface.choiceContents.youtube.dto;
 
-import com.allin.filmface.search.dto.SearchDTO;
+
 import lombok.*;
 
 import java.util.List;
@@ -19,6 +19,5 @@ public class YoutubeDTO {
 
     private String youtubeTitle;
 
-    private List<SearchDTO> searchNo;
 
 }

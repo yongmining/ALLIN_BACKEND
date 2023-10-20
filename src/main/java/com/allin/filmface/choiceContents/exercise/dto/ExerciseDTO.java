@@ -10,13 +10,13 @@ import lombok.*;
 public class ExerciseDTO {
     private int exerciseNo;
 
-    private long exerciseLink;
+    private String exerciseLink;
 
-    private int exerciseCategory;
 
-    private  int exerciseViews;
 
-    //분석번호
+    private  String exerciseTitle;
+
+
 
 
 

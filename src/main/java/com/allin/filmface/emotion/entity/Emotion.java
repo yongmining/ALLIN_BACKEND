@@ -1,6 +1,5 @@
 package com.allin.filmface.emotion.entity;
 
-import com.allin.filmface.picture.entity.Picture;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -23,10 +22,6 @@ public class Emotion {
     private String emotionResult;
 
 
-    @ManyToOne
-    @JoinColumn(name = "PICTURE_NO", referencedColumnName = "PICTURE_NO")
-    @JsonBackReference
-    private Picture picture;
 
 
 }

@@ -11,9 +11,8 @@ public class MusicDTO {
 
     private int musicNo;
 
-    private  long musicLink;
+    private  String musicLink;
 
-    private  int musicCategory;
+    private String musicTitle;
 
-    private  int musicViews;
 }
