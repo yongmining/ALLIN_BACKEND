@@ -1,59 +1,61 @@
 package com.allin.filmface.niceTable.controller;
 
+import com.allin.filmface.choiceContents.youtube.entity.Youtube;
+import com.allin.filmface.niceTable.dto.YoutubeNiceDTO;
 import com.allin.filmface.niceTable.entity.Nice;
-import com.allin.filmface.niceTable.service.NiceService;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import com.allin.filmface.niceTable.service.NiceService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/v1")
-@AllArgsConstructor
+@RequestMapping("/nice")
 public class NiceController {
+
+    private final NiceService niceService;
+
     @Autowired
-//    private NiceService niceService;
+    public NiceController(NiceService niceService) {
+        this.niceService = niceService;
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Void> createYoutubeNice(@RequestBody YoutubeNiceDTO youtubeNiceDTO) {
+        System.out.println(youtubeNiceDTO);
+        niceService.createOrCancelYoutubeNice(youtubeNiceDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    @GetMapping("/nicecount/{youtubeNo}")
+    public ResponseEntity<Long> getNiceCount(@PathVariable int youtubeNo) {
+        Long count = niceService.getNiceCountForYoutube(youtubeNo);
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+    @GetMapping("/recommendations/{memberNo}")
+    public ResponseEntity<List<Youtube>> getRecommendedVideosByAge(@PathVariable int memberNo) {
+        List<Youtube> recommendedVideos = niceService.getRecommendedVideosByAge(memberNo);
+        return new ResponseEntity<>(recommendedVideos, HttpStatus.OK);
+    }
+
+
+
+
+
+
+//    @GetMapping("/get-nice")
+//    public ResponseEntity<YoutubeNiceDTO> getNice(
+//            @RequestParam int memberNo,
+//            @RequestParam int youtubeNo) {
+//        YoutubeNiceDTO nice = niceService.getNice(memberNo, youtubeNo);
 //
-//    @PostMapping("/increment")
-//    public ResponseEntity<String> incrementNice(@RequestParam int searchNo) {
-//        Nice updatedNice = niceService.incrementNice(searchNo);
-//        if (updatedNice != null) {
-//            return ResponseEntity.ok("Niced!");
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//
-//    @GetMapping("/nicelist")
-//    public ResponseEntity<Nice> getNices(@RequestParam int searchNo) {
-//        Nice nice = niceService.getNiceBySearchNo(searchNo);
 //        if (nice != null) {
 //            return ResponseEntity.ok(nice);
 //        } else {
 //            return ResponseEntity.notFound().build();
 //        }
 //    }
-//}
-    private NiceService niceService;
-
-    @PostMapping("/nice")
-    public ResponseEntity<String> toggleNice(@RequestParam int searchNo) {
-        boolean isNiced = niceService.toggleNice(searchNo);
-
-        if (isNiced) {
-            return ResponseEntity.ok("Niced!");
-        } else {
-            return ResponseEntity.ok("Unniced!");
-        }
-    }
-
-    @GetMapping("/nicelist")
-    public ResponseEntity<Nice> getNices(@RequestParam int searchNo) {
-        Nice nice = niceService.getNiceBySearchNo(searchNo);
-        if (nice != null) {
-            return ResponseEntity.ok(nice);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

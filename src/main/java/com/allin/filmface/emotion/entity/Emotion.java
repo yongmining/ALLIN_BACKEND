@@ -21,10 +21,6 @@ public class Emotion {
     private String emotionResult;
 
 
-    @ManyToOne
-    @JoinColumn(name = "PICTURE_NO", referencedColumnName = "PICTURE_NO")
-    @JsonBackReference
-    private Picture picture;
 
 
 }

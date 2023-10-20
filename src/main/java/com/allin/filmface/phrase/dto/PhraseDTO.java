@@ -11,5 +11,5 @@ public class PhraseDTO {
 
     private int phraseNo;
 
-    private String pharseContent;
+    private String phraseContent;
 }
