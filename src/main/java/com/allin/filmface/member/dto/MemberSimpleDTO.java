@@ -1,17 +1,17 @@
-package com.allin.filmface.member.dto;
+    package com.allin.filmface.member.dto;
 
-import lombok.*;
+    import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
-@Getter
-@ToString
-public class MemberSimpleDTO {
-    private int memberNo;
-    private String memberNickname;
-    private int memberAge;
-    private String memberGender;
-    private String memberImage;
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Setter
+    @Getter
+    @ToString
+    public class MemberSimpleDTO {
+        private int memberNo;
+        private String memberNickname;
+        private int memberAge;
+        private String memberGender;
+        private String memberImage;
 
-}
+    }

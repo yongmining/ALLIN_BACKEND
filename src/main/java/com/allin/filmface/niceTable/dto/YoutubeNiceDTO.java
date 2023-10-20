@@ -1,5 +1,6 @@
 package com.allin.filmface.niceTable.dto;
 
+import com.allin.filmface.member.dto.MemberSimpleDTO;
 import com.allin.filmface.search.dto.SearchDTO;
 import lombok.*;
 
@@ -8,12 +9,12 @@ import lombok.*;
 @Setter
 @Getter
 @ToString
-public class NiceDTO {
+public class YoutubeNiceDTO {
 
-    private SearchDTO search;
+    private MemberSimpleDTO member;
 
     private int niceNo;
-    private int niceCount;
+    private int youtubeNo;
 
 
 }
