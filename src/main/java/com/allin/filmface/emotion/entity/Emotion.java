@@ -20,6 +20,8 @@ public class Emotion {
     @Column(name = "EMOTION_RESULT")
     private String emotionResult;
 
+    @Column(name = "MEMBER_NO")
+    private Integer memberNo;
 
 
 
