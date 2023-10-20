@@ -29,7 +29,7 @@ public class Search {
     private int contentNo;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "EMOTION_NO", referencedColumnName = "EMOTION_NO")
     @JsonBackReference
     private Emotion emotion;
