@@ -24,9 +24,6 @@ public class Nice {
     @Column(name = "NICE_COUNT")
     private int niceCount;
 
-    @OneToOne
-    @JoinColumn(name = "SEARCH_NO", referencedColumnName = "SEARCH_NO")
-    @Comment("조회 번호")
-    private Search search;
+
 
 }

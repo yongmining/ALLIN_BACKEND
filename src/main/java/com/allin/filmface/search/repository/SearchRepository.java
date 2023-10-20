@@ -12,6 +12,6 @@ import java.util.Optional;
 
 public interface SearchRepository extends JpaRepository<Search, Integer> {
 
-    Page<SearchDTO> findByEmotionEmotionNo(Pageable pageable,int emotionNo);
+    Page<Search> findAllByEmotion_EmotionNo(int emotionNo, Pageable pageable);
 
 }
