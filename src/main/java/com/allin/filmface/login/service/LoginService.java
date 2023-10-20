@@ -2,6 +2,7 @@ package com.allin.filmface.login.service;
 
 import com.allin.filmface.login.dto.AccessTokenDTO;
 import com.allin.filmface.login.dto.KakaoAccessTokenDTO;
+import com.allin.filmface.login.dto.KakaoProfileDTO;
 import com.allin.filmface.login.dto.RenewTokenDTO;
 import com.allin.filmface.member.dto.MemberDTO;
 import com.allin.filmface.member.entity.Member;
@@ -34,6 +35,29 @@ public class LoginService {
     public LoginService(MemberService memberService) {
         this.memberService = memberService;
 
+    }
+
+    public KakaoProfileDTO findKakaoProfile(String accessToken) {
+        RestTemplate rt = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = new HttpEntity<>(headers);
+
+        ResponseEntity<String> kakaoProfileResponse = rt.exchange("https://kapi.kakao.com/v2/user/me", HttpMethod.POST,
+                kakaoProfileRequest, String.class);
+
+        KakaoProfileDTO kakaoProfileDTO = new KakaoProfileDTO();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            kakaoProfileDTO = objectMapper.readValue(kakaoProfileResponse.getBody(), KakaoProfileDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return kakaoProfileDTO;
     }
 
     public KakaoAccessTokenDTO getAccessToken(String code) {
@@ -76,12 +100,14 @@ public class LoginService {
 
     @Transactional
     public void getJwtToken(KakaoAccessTokenDTO kakaoToken) {
+
+        KakaoProfileDTO kakaoProfileDTO = findKakaoProfile(kakaoToken.getAccess_token());
         // 해당 유저의 가입 이력을 확인
-        if (memberService.findBySocialId("KAKAO", String.valueOf(kakaoToken.getMemberNo())) == null) {
+        if (memberService.findBySocialId("KAKAO", String.valueOf(kakaoProfileDTO.getId())) == null) {
             MemberDTO newMember = new MemberDTO();
 
             newMember.setSocialLogin("KAKAO");
-            newMember.setSocialId(String.valueOf(kakaoToken.getMemberNo()));
+            newMember.setSocialId(String.valueOf(kakaoProfileDTO.getId()));
 
             newMember.setRefreshToken(kakaoToken.getRefresh_token());
             newMember.setRefreshTokenExpireDate(kakaoToken.getRefresh_token_expires_in() + System.currentTimeMillis());
@@ -95,7 +121,7 @@ public class LoginService {
         }
 
         /* 소셜 아이디로 멤버가 있는지 조회해 가져옴 */
-        Member foundmember = memberService.findBySocialId("KAKAO", String.valueOf(kakaoToken.getMemberNo()));
+        Member foundmember = memberService.findBySocialId("KAKAO", String.valueOf(kakaoProfileDTO.getId()));
         kakaoToken.setMemberNo(foundmember.getMemberNo());
 
         /* 액세스토큰, 리프레시 토큰 업데이트 */
@@ -164,8 +190,9 @@ public class LoginService {
 
         HttpEntity<MultiValueMap<String, String>> kakaoLogoutRequest = new HttpEntity<>(params, headers);
 
-        ResponseEntity<String> kakaoLogoutResponse = rt.exchange("https://kapi.kakao.com/v1/user/logout",
-                //                "https://kapi.kakao.com/v1/user/unlink",
+        ResponseEntity<String> kakaoLogoutResponse = rt.exchange(
+//                                "https://kapi.kakao.com/v1/user/logout",
+                                "https://kapi.kakao.com/v1/user/unlink",
                 HttpMethod.POST, kakaoLogoutRequest, String.class);
 
         return kakaoLogoutResponse.getStatusCode().is2xxSuccessful();
