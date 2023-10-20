@@ -2,7 +2,6 @@ package com.allin.filmface.emotion.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
-import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 @AllArgsConstructor
@@ -13,10 +12,10 @@ import javax.persistence.*;
 @Entity(name= "Emotion")
 @Table(name = "EMOTION")
 public class Emotion {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "EMOTION_NO")
-        private int emotionNo;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "EMOTION_NO")
+    private int emotionNo;
 
     @Column(name = "EMOTION_RESULT")
     private String emotionResult;
