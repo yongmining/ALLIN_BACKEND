@@ -1,4 +1,4 @@
-package com.allin.filmface.picture.entity;
+package com.allin.filmface.emotion.entity;
 
 import com.allin.filmface.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonBackReference;
