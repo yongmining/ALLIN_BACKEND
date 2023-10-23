@@ -43,6 +43,8 @@
               auth: https://kauth.kakao.com
               api: https://kapi.kakao.com
 
+
+
               youtube:
                 api:
                   key: AIzaSyAk_57Y9J1-SoqbiQ0WTC2qUQLTA4RgiLg
@@ -53,8 +55,10 @@
         mybatis:
           mapper-locations: mybatis/*.xml
 
-
-
+        app:
+          jwt:
+            secret: fIagy51qdekroJ/7OUFsIfMtN7vQLrF4USS2bP0KIJcN72J+mWSgurZ1i3kD+aFh7us748AVClAM373I+UJ4VQ==
+            expirationMs: 7200000
 
 #        # aws 설정
 #        # 사용할 S3 bucket region 입력

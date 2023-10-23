@@ -1,14 +1,16 @@
 package com.allin.filmface.login.service;
 
-import com.allin.filmface.login.dto.AccessTokenDTO;
+import com.allin.filmface.jwt.JwtTokenProvider;
 import com.allin.filmface.login.dto.KakaoAccessTokenDTO;
 import com.allin.filmface.login.dto.KakaoProfileDTO;
 import com.allin.filmface.login.dto.RenewTokenDTO;
 import com.allin.filmface.member.dto.MemberDTO;
+import com.allin.filmface.member.dto.MemberSimpleDTO;
 import com.allin.filmface.member.entity.Member;
 import com.allin.filmface.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,18 +24,21 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import java.util.Date;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class LoginService {
+
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Value("${oauth.Kakao.client-id}")
     private String KAKAO_CLIENT_ID;
 
 
-    public LoginService(MemberService memberService) {
+    @Autowired
+    public LoginService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
+        this.jwtTokenProvider = jwtTokenProvider;
 
     }
 
@@ -192,15 +197,34 @@ public class LoginService {
 
         ResponseEntity<String> kakaoLogoutResponse = rt.exchange(
 //                                "https://kapi.kakao.com/v1/user/logout",
-                                "https://kapi.kakao.com/v1/user/unlink",
+                "https://kapi.kakao.com/v1/user/unlink",
                 HttpMethod.POST, kakaoLogoutRequest, String.class);
 
         return kakaoLogoutResponse.getStatusCode().is2xxSuccessful();
     }
 
     public String createGuestToken() {
-        String guestId = "GUEST_" + System.currentTimeMillis();
+        return jwtTokenProvider.generateToken();
+    }
 
-        return "게스트 로그인이 되었습니다.";
+    public MemberDTO createGuestMember(String guestToken) {
+        if (jwtTokenProvider.validateToken(guestToken)) {
+            String name = "Guest";
+            int age = 0;
+            String gender = "성별 없음";
+
+            MemberDTO guestMember = new MemberDTO();
+            guestMember.setMemberNickname(name);
+            guestMember.setMemberAge(age);
+            guestMember.setMemberGender(gender);
+
+            guestMember.setMemberImage(findMemberImage(guestMember.getSocialId()));
+
+
+            return guestMember;
+        } else {
+            // 토큰이 유효하지 않은 경우 예외 처리 또는 오류 메시지를 반환할 수 있습니다.
+            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+        }
     }
 }
