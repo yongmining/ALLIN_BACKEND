@@ -4,6 +4,7 @@ import com.allin.filmface.common.ResponseDTO;
 import com.allin.filmface.login.dto.AccessTokenDTO;
 import com.allin.filmface.login.dto.KakaoAccessTokenDTO;
 import com.allin.filmface.login.service.LoginService;
+import com.allin.filmface.member.dto.MemberDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class LoginController {
         /* JWT와 응답 결과를 프론트에 전달*/
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "로그인 성공", responseMap));
     }
+
     @PostMapping("/kakaologout")
     public ResponseEntity<?> kakaoLogout(@RequestHeader("Authorization") String accessToken) {
         /* 카카오 로그아웃 API 호출 */
@@ -85,10 +87,13 @@ public class LoginController {
     @PostMapping("/guest")
     public ResponseEntity<?> guestLogin() {
         String guestToken = loginService.createGuestToken();
+        MemberDTO guestMember = loginService.createGuestMember(guestToken);
 
         Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("guestMember", guestMember);
         responseMap.put("token", guestToken);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비회원 로그인 성공", responseMap));
     }
 }
+

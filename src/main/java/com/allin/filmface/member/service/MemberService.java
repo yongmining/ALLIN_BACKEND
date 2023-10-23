@@ -1,9 +1,12 @@
 package com.allin.filmface.member.service;
 
+import com.allin.filmface.jwt.JwtTokenProvider;
 import com.allin.filmface.member.dto.MemberDTO;
 import com.allin.filmface.member.dto.MemberSimpleDTO;
 import com.allin.filmface.member.entity.Member;
 import com.allin.filmface.member.repository.MemberRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -19,6 +22,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public long registNewUser(MemberDTO newMember) {
@@ -45,7 +49,7 @@ public class MemberService {
     public MemberDTO updateprofile(int memberNo, MemberSimpleDTO updateMember) {
 
         Member member = memberRepository.findById(memberNo)
-                 .orElseThrow(() -> new NoSuchElementException("수정 오류가 났습니다. 다시 수정 요청 부탁드립니다."));
+                .orElseThrow(() -> new NoSuchElementException("수정 오류가 났습니다. 다시 수정 요청 부탁드립니다."));
 
         member.setMemberNickname(updateMember.getMemberNickname());
         member.setMemberAge(updateMember.getMemberAge());
@@ -66,4 +70,9 @@ public class MemberService {
     public Member findBySocialId(String socialLogin, String socialId) {
         return memberRepository.findBySocialId(socialLogin, socialId);
     }
+
+    public MemberDTO getMemberByToken(String token) {
+        return jwtTokenProvider.getMemberFromToken(token);
+    }
+
 }

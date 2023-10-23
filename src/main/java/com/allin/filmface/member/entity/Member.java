@@ -22,7 +22,7 @@ public class Member {
     private String memberNickname;
 
     @Column(name = "MEMBER_AGE")
-    private long memberAge;
+    private int memberAge;
 
     @Column(name = "MEMBER_IMG")
     private String memberImage;

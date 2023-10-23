@@ -5,6 +5,7 @@ import com.allin.filmface.common.ResponseDTO;
 import com.allin.filmface.common.paging.Pagenation;
 import com.allin.filmface.common.paging.ResponseDTOWithPaging;
 import com.allin.filmface.common.paging.SelectCriteria;
+import com.allin.filmface.jwt.JwtTokenProvider;
 import com.allin.filmface.member.dto.MemberDTO;
 import com.allin.filmface.member.dto.MemberSimpleDTO;
 import com.allin.filmface.member.entity.Member;
@@ -34,6 +35,7 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @ApiOperation(value = "소셜Id로 멤버조회")
     @GetMapping("/member/{socialLogin}/{socialId}")
@@ -68,7 +70,7 @@ public class MemberController {
 
     @GetMapping("/members")
     public ResponseEntity<ResponseDTO> findAllMembers(@PageableDefault Pageable pageable) {
-        
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
@@ -88,7 +90,7 @@ public class MemberController {
                                                      @RequestBody MemberSimpleDTO memberSimpleDTO) {
 
         MemberDTO updatedProfile = memberService.updateprofile(memberNo, memberSimpleDTO);
-        if(updatedProfile != null) {
+        if (updatedProfile != null) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseDTO(HttpStatus.OK, "프로필 수정 성공", updatedProfile));
         } else {
@@ -104,5 +106,24 @@ public class MemberController {
         memberService.deleteMember(memberNo);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @ApiOperation(value = "토큰으로 회원 조회")
+    @GetMapping("/member/{token}")
+    public ResponseEntity<ResponseDTO> findMemberByToken(@RequestHeader("Authorization") String token) {
+        if (jwtTokenProvider.validateToken(token)) {
+            MemberDTO foundMember = memberService.getMemberByToken(token);
+
+            if (foundMember != null) {
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("member", foundMember);
+
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "회원 조회 성공", responseMap));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다.", null));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다.", null));
+        }
     }
 }
