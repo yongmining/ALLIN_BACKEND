@@ -109,7 +109,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "토큰으로 회원 조회")
-    @GetMapping("/member/{token}")
+    @GetMapping("/member/guest/{token}")
     public ResponseEntity<ResponseDTO> findMemberByToken(@RequestHeader("Authorization") String token) {
         if (jwtTokenProvider.validateToken(token)) {
             MemberDTO foundMember = memberService.getMemberByToken(token);
