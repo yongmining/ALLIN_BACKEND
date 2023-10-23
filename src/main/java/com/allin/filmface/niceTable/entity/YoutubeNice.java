@@ -28,7 +28,7 @@ public class YoutubeNice {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "YOUTUBE_NO", referencedColumnName = "YOUTUBE_NO")
     @JsonBackReference
-    private Youtube youtube;
+    private Youtube youtubeNo;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MEMBER_NO", referencedColumnName = "MEMBER_NO")

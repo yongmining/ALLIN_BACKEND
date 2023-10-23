@@ -43,19 +43,4 @@ public class NiceController {
 
 
 
-
-
-
-//    @GetMapping("/get-nice")
-//    public ResponseEntity<YoutubeNiceDTO> getNice(
-//            @RequestParam int memberNo,
-//            @RequestParam int youtubeNo) {
-//        YoutubeNiceDTO nice = niceService.getNice(memberNo, youtubeNo);
-//
-//        if (nice != null) {
-//            return ResponseEntity.ok(nice);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
 }
