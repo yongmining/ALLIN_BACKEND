@@ -49,9 +49,11 @@ public class YoutubeService {
                 String youtubeLink = "https://www.youtube.com/watch?v=" + sr.getId().getVideoId();
                 video.setYoutubeLink(youtubeLink);
                 video.setYoutubeTitle(sr.getSnippet().getTitle());
+                video.setThumbnailUrl(sr.getSnippet().getThumbnails().getDefault().getUrl()); // 이미지 URL 설정
                 youtubeRepository.save(video);
                 resultVideos.add(video);
             }
+
 
         } catch (Exception e) {
             System.out.println("Error occurred: " + e.getMessage());
