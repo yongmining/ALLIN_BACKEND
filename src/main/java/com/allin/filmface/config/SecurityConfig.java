@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/api/v1/login/**").permitAll()
                 .antMatchers("/api/v1/logout").permitAll()
-                .antMatchers("/api/v1/emotion/analyze").permitAll() // 추가: 감정 분석 엔드포인트 허용
+                .antMatchers("/api/v1/**").permitAll()
                 .antMatchers("/swagger-ui/index.html", "/swagger/**", "/v1/api-docs", "/swagger-resources/**", "/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
