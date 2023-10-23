@@ -29,10 +29,15 @@ public class Exercise {
     @Column(name = "EXERCISE_TITLE")
     private String exerciseTitle;
 
+    @Column(name = "THUMBNAIL_URL") // 썸네일 이미지 URL 컬럼 추가
+    private String thumbnailUrl;
+
+
 
     @ManyToOne
     @JoinColumn(name = "EMOTION_NO", referencedColumnName = "EMOTION_NO")
     @JsonBackReference
     private Emotion emotion;
 
+    private Integer memberNo;
 }

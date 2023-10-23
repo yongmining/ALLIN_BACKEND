@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface MusicRepository extends JpaRepository<Music, Long> {
-    List<Music> findByEmotion_EmotionResult(String emotionResult);
+    // Emotion의 결과와 회원 번호에 따라 Music 데이터를 조회합니다.
+    List<Music> findByEmotion_EmotionResultAndMemberNo(String emotionResult, Integer memberNo);
 }

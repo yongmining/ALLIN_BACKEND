@@ -2,8 +2,13 @@ package com.allin.filmface.choiceContents.music.controller;
 
 import com.allin.filmface.choiceContents.music.entity.Music;
 import com.allin.filmface.choiceContents.music.service.MusicService;
+import com.allin.filmface.common.ResponseDTO;
+import com.allin.filmface.emotion.entity.Emotion;
+import com.allin.filmface.emotion.repository.EmotionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,29 +24,41 @@ public class MusicController {
 
     @Autowired
     private MusicService musicService;
+    @Autowired
+    private EmotionRepository emotionRepository;
 
     @GetMapping("/music/emotion")
-    public List<Music> getMusicByEmotion(@RequestParam String emotionResult) {
-        String query = "";
-        switch(emotionResult) {
-            case "슬픔":
-                query = "조용한 발라드"; // 음악 검색조건: 슬픔
-                break;
-            case "화남":
-                query = "록 음악"; // 음악 검색조건: 화남
-                break;
-            case "무표정":
-            case "행복":
-                query = "즐거운 팝 음악"; // 음악 검색조건: 무표정, 행복
-                break;
-            case "놀람":
-            case "역겨움":
-            case "두려운":
-                query = "클래식 음악"; // 음악 검색조건: 놀람, 역겨움, 두려운
-                break;
-            default:
-                return new ArrayList<>();
+    public ResponseEntity<ResponseDTO> getMusicBasedOnEmotion(@RequestParam(name = "memberNo") Integer memberNo) {
+        Emotion recentEmotion = emotionRepository.findFirstByMemberNoOrderByEmotionNoDesc(memberNo);
+        List<Music> musicList;
+        if (recentEmotion == null) {
+            musicList = new ArrayList<>();
+        } else {
+            String emotionResult = recentEmotion.getEmotionResult();
+            String query = "";
+            switch (emotionResult) {
+                case "슬픔":
+                    query = "슬픈 노래";
+                    break;
+                case "화남":
+                    query = "잔잔한 노래";
+                    break;
+                case "무표정":
+                case "행복":
+                    query = "신나는 노래";
+                    break;
+                case "놀람":
+                case "역겨움":
+                case "두려운":
+                    query = "잔잔한 노래";
+                    break;
+                default:
+                    musicList = new ArrayList<>();
+                    return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "조회성공", musicList));
+            }
+            musicList = musicService.getMusicContentsByQuery(query, memberNo);
         }
-        return musicService.getMusicContentsByQuery(query);
+            return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "조회성공", musicList));
+        }
     }
-}
+
