@@ -38,5 +38,6 @@ public class Youtube {
     @JsonBackReference
     private Emotion emotion;
 
+
     private Integer memberNo;
 }
