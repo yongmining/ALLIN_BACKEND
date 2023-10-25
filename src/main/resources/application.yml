@@ -2,6 +2,8 @@
         server:
           port: 8080
 
+
+
         # mysql driver config
         spring:
           datasource:
@@ -11,8 +13,6 @@
             password: 112233445566778899
             hikari:
               auto-commit: false
-
-
           devtools:
             restart:
               enabled: false
@@ -20,6 +20,9 @@
               enabled: true #개발 : true 운영 : false
           freemarker:
             cache: false #개발 : false 운영 : true
+        resources:  #이미지 위치인데 지울수도 있음!! -명건-
+          static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+
 
 
           jpa:
@@ -32,7 +35,8 @@
                 hbm2ddl:
                   auto: update #개발 : update 운영: none
 
-#        aws:
+
+         #        aws:
 #          accessKey: AKIA6PF2SY7J7NXQBY6Y
 #          secretAccessKey: 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
 
@@ -68,3 +72,4 @@
 #              static: ap-northeast-2
 #            stack:
 #              auto: false
+
