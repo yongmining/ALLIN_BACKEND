@@ -64,29 +64,43 @@ public class NiceService {
         return niceRepository.countByYoutubeNo_YoutubeNo(youtubeNo);
     }
 
-    public List<Youtube> getRecommendedVideosByAge(int memberNo) {
+//    public List<Youtube> getRecommendedVideosByAge(int memberNo) {
+//        Member member = memberRepository.findById(memberNo).orElse(null);
+//        if (member == null) {
+//            return new ArrayList<>();
+//        }
+//
+//        long age = member.getMemberAge();
+//        String ageGroup;
+//        if (age < 20) {
+//            ageGroup = "teen";
+//        } else if (age < 30) {
+//            ageGroup = "twenties";
+//        } else if (age < 40) {
+//            ageGroup = "thirties";
+//        } else {
+//            ageGroup = "older";
+//        }
+//
+//        // ageGroup를 기반으로 youtubenice 테이블과 Member 테이블을 JOIN하여 연령대별로 가장 많은 좋아요를 받은 유튜브 영상을 조회
+//        return niceRepository.findTopVideosByAgeGroup(ageGroup);
+//
+//    }
+
+
+    public List<Youtube> getRecommendedVideosByEmotionAndAge(int memberNo) {
         Member member = memberRepository.findById(memberNo).orElse(null);
         if (member == null) {
-            return new ArrayList<>();
+            // 회원 정보가 없을 경우 처리 로직
+            return Collections.emptyList();
         }
 
-        long age = member.getMemberAge();
-        String ageGroup;
-        if (age < 20) {
-            ageGroup = "teen";
-        } else if (age < 30) {
-            ageGroup = "twenties";
-        } else if (age < 40) {
-            ageGroup = "thirties";
-        } else {
-            ageGroup = "older";
-        }
+        int memberAge = member.getMemberAge();
+        int ageRangeStart = memberAge / 10 * 10; // 연령대 시작 값 (예: 23 -> 20)
+        int ageRangeEnd = ageRangeStart + 9;      // 연령대 끝 값 (예: 23 -> 29)
 
-        // ageGroup를 기반으로 youtubenice 테이블과 Member 테이블을 JOIN하여 연령대별로 가장 많은 좋아요를 받은 유튜브 영상을 조회
-        return niceRepository.findTopVideosByAgeGroup(ageGroup);
-
+        return niceRepository.findTop6YoutubeByEmotionAndAge(memberNo, ageRangeStart, ageRangeEnd);
     }
-
     public Long getTotalNiceCountByYoutubeNo(int youtubeNo) {
         return youtubeRepository.findTotalNiceCountByYoutubeNo(youtubeNo);
     }
