@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class EmotionService {
 
-    public List<EmotionDTO> analyzeEmotion(EmotionDTO emotionDTO) {
+    public List<EmotionDTO> analyzeEmotion(EmotionDTO EmotionDTO) {
 
         List<EmotionDTO> emotions = new ArrayList<>();
 
