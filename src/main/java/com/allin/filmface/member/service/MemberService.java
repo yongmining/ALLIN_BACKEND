@@ -1,9 +1,12 @@
 package com.allin.filmface.member.service;
 
 import com.allin.filmface.jwt.JwtTokenProvider;
+import com.allin.filmface.member.dto.GuestDTO;
 import com.allin.filmface.member.dto.MemberDTO;
 import com.allin.filmface.member.dto.MemberSimpleDTO;
+import com.allin.filmface.member.entity.Guest;
 import com.allin.filmface.member.entity.Member;
+import com.allin.filmface.member.repository.GuestRepository;
 import com.allin.filmface.member.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -22,12 +25,18 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final GuestRepository guestRepository;
 
     @Transactional
     public long registNewUser(MemberDTO newMember) {
-        newMember.setMemberNickname("새로운 회원 " + (Math.random() * 100 + 1));
+        newMember.setMemberNickname("새로운 회원" + (Math.random() * 100 + 1));
         return memberRepository.save(modelMapper.map(newMember, Member.class)).getMemberNo();
+    }
+
+    @Transactional
+    public long registGuest(GuestDTO guestMember) {
+        guestMember.setGuestNickname("GUEST");
+        return guestRepository.save(modelMapper.map(guestMember, Guest.class)).getGuestNo();
     }
 
 
@@ -71,8 +80,26 @@ public class MemberService {
         return memberRepository.findBySocialId(socialLogin, socialId);
     }
 
-    public MemberDTO getMemberByToken(String token) {
-        return jwtTokenProvider.getMemberFromToken(token);
+    public Guest findGuestMemberByCode(String socialCode) {
+        return guestRepository.findGuestMemberByCode(socialCode);
     }
 
+    @Transactional
+    public GuestDTO guestprofile(String socialCode, GuestDTO updateGuest) {
+
+        Guest guest = guestRepository.findGuestMemberByCode(socialCode);
+
+        guest.setGuestAge(updateGuest.getGuestAge());
+        guest.setGuestGender(updateGuest.getGuestGender());
+
+        return modelMapper.map(guest, GuestDTO.class);
+    }
+
+    @Transactional
+    public void deleteGuest(String socialCode) {
+
+        Guest guestMember = guestRepository.findGuestMemberByCode(socialCode);
+
+        guestRepository.delete(guestMember);
+    }
 }
