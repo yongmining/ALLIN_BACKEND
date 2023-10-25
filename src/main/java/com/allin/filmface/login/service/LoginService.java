@@ -4,8 +4,8 @@ import com.allin.filmface.jwt.JwtTokenProvider;
 import com.allin.filmface.login.dto.KakaoAccessTokenDTO;
 import com.allin.filmface.login.dto.KakaoProfileDTO;
 import com.allin.filmface.login.dto.RenewTokenDTO;
+import com.allin.filmface.member.dto.GuestDTO;
 import com.allin.filmface.member.dto.MemberDTO;
-import com.allin.filmface.member.dto.MemberSimpleDTO;
 import com.allin.filmface.member.entity.Member;
 import com.allin.filmface.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -203,27 +203,25 @@ public class LoginService {
         return kakaoLogoutResponse.getStatusCode().is2xxSuccessful();
     }
 
-    public String createGuestToken() {
-        return jwtTokenProvider.generateToken();
+    public String createGuestToken(String code) {
+        return jwtTokenProvider.generateToken(code);
     }
 
-    public MemberDTO createGuestMember(String guestToken) {
-        if (jwtTokenProvider.validateToken(guestToken)) {
-            String name = "Guest";
-            int age = 0;
-            String gender = "성별 없음";
+    public GuestDTO createGuestMember(String Token,String code) {
+        String token = createGuestToken(Token);
 
-            MemberDTO guestMember = new MemberDTO();
-            guestMember.setMemberNickname(name);
-            guestMember.setMemberAge(age);
-            guestMember.setMemberGender(gender);
+        if (jwtTokenProvider.validateGuestToken(token, Token)) {
+            GuestDTO guestMember = new GuestDTO();
 
-            guestMember.setMemberImage(findMemberImage(guestMember.getSocialId()));
+            guestMember.setSocialLogin("GUEST");
+            guestMember.setSocialCode(code);
+            guestMember.setAccessToken(token);
+            guestMember.setGuestImage(findMemberImage(guestMember.getSocialCode()));
 
+            memberService.registGuest(guestMember);
 
             return guestMember;
         } else {
-            // 토큰이 유효하지 않은 경우 예외 처리 또는 오류 메시지를 반환할 수 있습니다.
             throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
         }
     }

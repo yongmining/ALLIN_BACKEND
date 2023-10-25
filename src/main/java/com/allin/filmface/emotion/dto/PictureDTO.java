@@ -1,20 +1,16 @@
+
 package com.allin.filmface.emotion.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-@ToString
 public class PictureDTO {
-    private int pictureNo;
-
-    public int getPictureNo() {
-        return pictureNo;
-    }
-
-    public void setPictureNo(int pictureNo) {
-        this.pictureNo = pictureNo;
-    }
+    private byte[] image;  // 변경: InputStream 대신 byte[] 사용
+    private String imageName;
 }

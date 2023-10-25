@@ -35,12 +35,16 @@ public class NiceController {
         Long count = niceService.getNiceCountForYoutube(youtubeNo);
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
-    @GetMapping("/recommendations/{memberNo}")
-    public ResponseEntity<List<Youtube>> getRecommendedVideosByAge(@PathVariable int memberNo) {
-        List<Youtube> recommendedVideos = niceService.getRecommendedVideosByAge(memberNo);
+//    @GetMapping("/recommendations/{memberNo}")
+//    public ResponseEntity<List<Youtube>> getRecommendedVideosByAge(@PathVariable int memberNo) {
+//        List<Youtube> recommendedVideos = niceService.getRecommendedVideosByAge(memberNo);
+//        return new ResponseEntity<>(recommendedVideos, HttpStatus.OK);
+//    }
+
+    @GetMapping("/recommendations/emotion-age/{memberNo}")
+    public ResponseEntity<List<Youtube>> getRecommendedVideosByEmotionAndAge(@PathVariable int memberNo) {
+        List<Youtube> recommendedVideos = niceService.getRecommendedVideosByEmotionAndAge(memberNo);
         return new ResponseEntity<>(recommendedVideos, HttpStatus.OK);
     }
-
-
 
 }

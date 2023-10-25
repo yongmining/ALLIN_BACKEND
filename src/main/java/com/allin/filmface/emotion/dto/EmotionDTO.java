@@ -8,12 +8,8 @@ import lombok.*;
 @Getter
 @ToString
 public class EmotionDTO {
-
     private int emotionNo;
-
     private String emotionResult;
-
     private String emotionAge;
-
     private String emotionGender;
 }

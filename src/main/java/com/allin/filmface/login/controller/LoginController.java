@@ -1,10 +1,9 @@
 package com.allin.filmface.login.controller;
 
 import com.allin.filmface.common.ResponseDTO;
-import com.allin.filmface.login.dto.AccessTokenDTO;
 import com.allin.filmface.login.dto.KakaoAccessTokenDTO;
 import com.allin.filmface.login.service.LoginService;
-import com.allin.filmface.member.dto.MemberDTO;
+import com.allin.filmface.member.dto.GuestDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class LoginController {
         responseMap.put("token", kakaoToken);
 
         /* JWT와 응답 결과를 프론트에 전달*/
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "로그인 성공", responseMap));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "로그인 성공", responseMap));
     }
 
     @PostMapping("/kakaologout")
@@ -85,15 +84,17 @@ public class LoginController {
 
     @ApiOperation(value = "비회원 로그인")
     @PostMapping("/guest")
-    public ResponseEntity<?> guestLogin() {
-        String guestToken = loginService.createGuestToken();
-        MemberDTO guestMember = loginService.createGuestMember(guestToken);
+    public ResponseEntity<?> guestLogin(@RequestBody Map<String, String> codeMap) {
+        String code = codeMap.get("code");
+
+        String Token = loginService.createGuestToken(code);
+        GuestDTO guestMember = loginService.createGuestMember(Token, code);
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("guestMember", guestMember);
-        responseMap.put("token", guestToken);
+        responseMap.put("token", Token);
+        responseMap.put("code", code);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비회원 로그인 성공", responseMap));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "비회원 로그인 성공", responseMap));
     }
 }
-
