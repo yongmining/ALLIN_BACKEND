@@ -31,7 +31,7 @@
 //    }
 //
 //    @PostMapping("/upload")
-//    public ResponseEntity<String> uploadPicture(@RequestParam("image") MultipartFile file, Principal principal) {
+//    public ResponseEntitㅂy<String> uploadPicture(@RequestParam("image") MultipartFile file, Principal principal) {
 //        try {
 //            String username = principal.getName(); // 현재 로그인한 사용자 이름 (username)을 얻음
 //            Picture savedPicture = pictureService.save(file, username);
