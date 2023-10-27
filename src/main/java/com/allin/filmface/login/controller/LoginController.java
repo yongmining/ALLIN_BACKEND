@@ -2,6 +2,7 @@ package com.allin.filmface.login.controller;
 
 import com.allin.filmface.common.ResponseDTO;
 import com.allin.filmface.login.dto.KakaoAccessTokenDTO;
+import com.allin.filmface.login.dto.UnloginDTO;
 import com.allin.filmface.login.service.LoginService;
 import com.allin.filmface.member.dto.GuestDTO;
 import io.swagger.annotations.Api;
@@ -84,16 +85,13 @@ public class LoginController {
 
     @ApiOperation(value = "비회원 로그인")
     @PostMapping("/guest")
-    public ResponseEntity<?> guestLogin(@RequestBody Map<String, String> codeMap) {
-        String code = codeMap.get("code");
+    public ResponseEntity<?> guestLogin(@RequestBody Map<String, String> code) {
 
-        String Token = loginService.createGuestToken(code);
-        GuestDTO guestMember = loginService.createGuestMember(Token, code);
-
+        UnloginDTO guestToken = loginService.createGuestToken(code.get("code"));
+        loginService.createGuestMember(guestToken);
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("guestMember", guestMember);
-        responseMap.put("token", Token);
-        responseMap.put("code", code);
+        responseMap.put("guestMember", guestToken);
+        System.out.println(guestToken);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "비회원 로그인 성공", responseMap));
     }

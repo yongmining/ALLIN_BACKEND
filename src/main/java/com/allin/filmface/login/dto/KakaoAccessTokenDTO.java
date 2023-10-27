@@ -11,7 +11,7 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KakaoAccessTokenDTO {
 
-    private long memberNo;
+    private int memberNo;
     private String access_token;
     private String token_type;
     private String refresh_token;

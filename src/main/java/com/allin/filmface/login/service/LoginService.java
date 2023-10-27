@@ -4,6 +4,7 @@ import com.allin.filmface.jwt.JwtTokenProvider;
 import com.allin.filmface.login.dto.KakaoAccessTokenDTO;
 import com.allin.filmface.login.dto.KakaoProfileDTO;
 import com.allin.filmface.login.dto.RenewTokenDTO;
+import com.allin.filmface.login.dto.UnloginDTO;
 import com.allin.filmface.member.dto.GuestDTO;
 import com.allin.filmface.member.dto.MemberDTO;
 import com.allin.filmface.member.entity.Member;
@@ -156,6 +157,7 @@ public class LoginService {
     }
 
 
+    @Transactional
     public RenewTokenDTO renewKakaoToken(Member foundMember) {
 
         RestTemplate rt = new RestTemplate();
@@ -185,6 +187,7 @@ public class LoginService {
         return renewToken;
     }
 
+    @Transactional
     public boolean kakaoLogout(String accessToken) {
 
         RestTemplate rt = new RestTemplate();
@@ -203,26 +206,26 @@ public class LoginService {
         return kakaoLogoutResponse.getStatusCode().is2xxSuccessful();
     }
 
-    public String createGuestToken(String code) {
-        return jwtTokenProvider.generateToken(code);
+    @Transactional
+    public UnloginDTO createGuestToken(String code) {
+        String token = jwtTokenProvider.generateToken(code);
+        UnloginDTO guestToken = new UnloginDTO();
+        guestToken.setCode(code);
+        guestToken.setGuest_token(token);
+        guestToken.setLoginType("guest");
+        return guestToken;
     }
 
-    public GuestDTO createGuestMember(String Token,String code) {
-        String token = createGuestToken(Token);
+    @Transactional
+    public void createGuestMember(UnloginDTO guestDTO) {
+        GuestDTO guestMember = new GuestDTO();
 
-        if (jwtTokenProvider.validateGuestToken(token, Token)) {
-            GuestDTO guestMember = new GuestDTO();
+        guestMember.setSocialLogin("GUEST");
+        guestMember.setSocialCode(guestDTO.getCode());
+        guestMember.setAccessToken(guestDTO.getGuest_token());
+        guestMember.setGuestImage(findMemberImage(guestMember.getSocialCode()));
 
-            guestMember.setSocialLogin("GUEST");
-            guestMember.setSocialCode(code);
-            guestMember.setAccessToken(token);
-            guestMember.setGuestImage(findMemberImage(guestMember.getSocialCode()));
-
-            memberService.registGuest(guestMember);
-
-            return guestMember;
-        } else {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
-        }
+        int guestNo = (int) memberService.registGuest(guestMember);
+        guestDTO.setGuestNo(guestNo);
     }
 }
