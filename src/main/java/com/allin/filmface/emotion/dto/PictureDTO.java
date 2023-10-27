@@ -13,4 +13,5 @@ import lombok.Setter;
 public class PictureDTO {
     private byte[] image;  // 변경: InputStream 대신 byte[] 사용
     private String imageName;
+    private int memberNo;
 }

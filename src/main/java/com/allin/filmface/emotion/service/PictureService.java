@@ -3,6 +3,7 @@ package com.allin.filmface.emotion.service;
 import com.allin.filmface.emotion.dto.PictureDTO;
 import com.allin.filmface.emotion.entity.Picture;
 import com.allin.filmface.emotion.repository.PictureRepository;
+import com.allin.filmface.member.dto.MemberDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class PictureService {
         // Create a new Picture entity and set its properties
         Picture picture = new Picture();
         picture.setImageName(pictureDTO.getImageName());
-        picture.setImage(pictureDTO.getImage());
+        picture.setImage(file); // Set the image data from the byte array
 
         // Save the picture entity in the repository
         return pictureRepository.save(picture);
