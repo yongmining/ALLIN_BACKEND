@@ -16,4 +16,8 @@ public interface YoutubeRepository extends JpaRepository<Youtube, Integer> {
     // YoutubeNo에 해당하는 동영상의 nice_no 합계를 조회
     @Query("SELECT SUM(nice.niceNo) FROM YoutubeNice nice WHERE nice.youtubeNo.youtubeNo = :youtubeNo")
     Long findTotalNiceCountByYoutubeNo(@Param("youtubeNo") int youtubeNo);
+
+    List<Youtube> findByYoutubeTitleAndMemberNo(String youtubeTitle, Integer memberNo);
+
+
 }

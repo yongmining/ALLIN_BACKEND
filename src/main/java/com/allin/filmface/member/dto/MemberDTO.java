@@ -14,7 +14,6 @@ public class MemberDTO {
     private int memberAge;
     private String memberGender;
     private String memberImage;
-
     private String socialLogin;
     private String socialId;
     private String accessToken;

@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
-    List<Exercise> findByEmotion_EmotionResultAndMemberNo(String emotionResult, Integer memberNo);
+    List<Exercise> findByExerciseTitleAndMemberNo(String exerciseTitle, Integer memberNo);
+
 }
