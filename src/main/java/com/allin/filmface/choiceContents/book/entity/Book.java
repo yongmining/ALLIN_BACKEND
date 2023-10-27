@@ -33,13 +33,13 @@ public class Book {
     @Column(name = "BOOK_AUTHOR")
     private String bookAuthor;
 
-
     @Column(name = "EMOTION_RESULT")
     private String emotionResult;
 
     @ManyToOne
     @JoinColumn(name = "EMOTION_NO", referencedColumnName = "EMOTION_NO")
     private Emotion emotion;
+
 
 
 }

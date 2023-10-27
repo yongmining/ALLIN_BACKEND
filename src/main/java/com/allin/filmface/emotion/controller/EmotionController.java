@@ -3,10 +3,12 @@ package com.allin.filmface.emotion.controller;
 import com.allin.filmface.emotion.dto.EmotionDTO;
 import com.allin.filmface.emotion.dto.PictureDTO;
 import com.allin.filmface.emotion.entity.Picture;
+import com.allin.filmface.emotion.service.EmotionService;
 import com.allin.filmface.emotion.service.PictureService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 @Api(tags = "감정분석 관련 API")
 @RestController
@@ -79,5 +82,13 @@ public class EmotionController {
             // 실패
             return null;
         }
+    }
+    @Autowired
+    private EmotionService emotionService;
+
+    @GetMapping("/emotion/member/{memberNo}")
+    public ResponseEntity<List<EmotionDTO>> getEmotionsByMemberNo(@PathVariable Integer memberNo) {
+        List<EmotionDTO> emotions = emotionService.getEmotionsByMemberNo(memberNo);
+        return ResponseEntity.ok(emotions);
     }
 }

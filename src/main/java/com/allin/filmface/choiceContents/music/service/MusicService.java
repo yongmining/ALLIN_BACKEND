@@ -23,7 +23,7 @@ public class MusicService {
     private EmotionRepository emotionRepository;
 
     @Autowired
-    private Auth auth;  // API Key 등을 제공하는 클래스
+    private Auth auth;
 
     private static YouTube youtube;
 
@@ -38,25 +38,35 @@ public class MusicService {
             search.setQ(query);
             search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
             search.setMaxResults(10L);
-            search.setType("video"); // 영상만 검색
-            search.setVideoCategoryId("10"); // 음악 카테고리
+            search.setType("video");
+            search.setVideoCategoryId("10");
 
             List<SearchResult> searchResults = search.execute().getItems();
 
             Emotion relatedEmotion = emotionRepository.findFirstByMemberNoOrderByEmotionNoDesc(memberNo);
 
             for (SearchResult sr : searchResults) {
-                Music music = new Music();
-                if (relatedEmotion != null) {
-                    music.setEmotion(relatedEmotion);
-                    music.setMemberNo(memberNo);
+                String musicTitle = sr.getSnippet().getTitle();
+
+                // Check if music with the same title already exists in the database for the user.
+                List<Music> existingMusics = musicRepository.findByMusicTitleAndMemberNo(musicTitle, memberNo);
+
+                if (existingMusics.isEmpty()) {
+                    Music music = new Music();
+                    if (relatedEmotion != null) {
+                        music.setEmotion(relatedEmotion);
+                        music.setMemberNo(memberNo);
+                    }
+                    String youtubeLink = "https://www.youtube.com/watch?v=" + sr.getId().getVideoId();
+                    music.setMusicLink(youtubeLink);
+                    music.setMusicTitle(musicTitle);
+                    music.setThumbnailUrl(sr.getSnippet().getThumbnails().getDefault().getUrl());
+                    musicRepository.save(music);
+                    resultMusics.add(music);
+                } else {
+                    // 이미 DB에 존재하는 음악도 결과 리스트에 추가
+                    resultMusics.addAll(existingMusics);
                 }
-                String youtubeLink = "https://www.youtube.com/watch?v=" + sr.getId().getVideoId();
-                music.setMusicLink(youtubeLink);
-                music.setMusicTitle(sr.getSnippet().getTitle());
-                music.setThumbnailUrl(sr.getSnippet().getThumbnails().getDefault().getUrl());
-                musicRepository.save(music);
-                resultMusics.add(music);
             }
 
         } catch (Exception e) {
