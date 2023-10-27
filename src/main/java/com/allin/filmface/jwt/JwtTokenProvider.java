@@ -37,7 +37,6 @@ public class JwtTokenProvider {
     }
 
     public boolean validateGuestToken(String token, String code) {
-
         try {
             Claims claims = Jwts.parser()
                     .setSigningKey(jwtSecret)
@@ -48,9 +47,7 @@ public class JwtTokenProvider {
                 return false;
             }
 
-            // 게스트 코드를 확인
             String tokenCode = claims.get("code", String.class);
-
             return code.equals(tokenCode);
         } catch (SignatureException e) {
             return false;
