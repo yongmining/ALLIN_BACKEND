@@ -39,16 +39,6 @@ public class MemberService {
         return guestRepository.save(modelMapper.map(guestMember, Guest.class)).getGuestNo();
     }
 
-
-    //일부 멤버 조회
-    public MemberDTO findMemberById(int memberNo) {
-
-        Member foundMember = memberRepository.findById(memberNo)
-                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
-        return modelMapper.map(foundMember, MemberDTO.class);
-    }
-
-
     public Page<MemberDTO> findAllMembers(Pageable pageable) {
         Page<Member> memberPage = memberRepository.findAll(pageable);
         return memberPage.map(member -> modelMapper.map(member, MemberDTO.class));
@@ -76,6 +66,14 @@ public class MemberService {
         memberRepository.delete(foundMember);
     }
 
+    //일부 멤버 조회
+    public MemberDTO findMemberById(int memberNo) {
+
+        Member foundMember = memberRepository.findById(memberNo)
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        return modelMapper.map(foundMember, MemberDTO.class);
+    }
+
     public Member findBySocialId(String socialLogin, String socialId) {
         return memberRepository.findBySocialId(socialLogin, socialId);
     }
@@ -84,10 +82,18 @@ public class MemberService {
         return guestRepository.findGuestMemberByCode(socialCode);
     }
 
-    @Transactional
-    public GuestDTO guestprofile(String socialCode, GuestDTO updateGuest) {
+    public GuestDTO findGuestById(int guestNo) {
 
-        Guest guest = guestRepository.findGuestMemberByCode(socialCode);
+        Guest guestMember = guestRepository.findById(guestNo)
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        return modelMapper.map(guestMember, GuestDTO.class);
+    }
+
+    @Transactional
+    public GuestDTO guestprofile(int guestNo , GuestDTO updateGuest) {
+
+        Guest guest = guestRepository.findById(guestNo)
+                 .orElseThrow(() -> new NoSuchElementException("수정 오류가 났습니다. 다시 수정 요청 부탁드립니다."));
 
         guest.setGuestAge(updateGuest.getGuestAge());
         guest.setGuestGender(updateGuest.getGuestGender());
@@ -96,9 +102,10 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteGuest(String socialCode) {
+    public void deleteGuest(int guestNo) {
 
-        Guest guestMember = guestRepository.findGuestMemberByCode(socialCode);
+        Guest guestMember = guestRepository.findById(guestNo)
+                .orElseThrow(() -> new NoSuchElementException("회원 정보를 찾을 수 없습니다."));
 
         guestRepository.delete(guestMember);
     }

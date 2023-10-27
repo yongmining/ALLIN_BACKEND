@@ -12,10 +12,10 @@ import java.time.LocalDate;
 public class TalkDTO {
 
     private long talkNo;
-    private String ChatUser;
-    private String ChatBot;
-    private LocalDate WriteDate;
-    private String UserMessage;
-    private String BotMessage;
+    private String chatUser;
+    private String chatBot;
+    private LocalDate writeDate;
+    private String userMessage;
+    private String botMessage;
 
 }

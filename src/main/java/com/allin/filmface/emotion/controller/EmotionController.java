@@ -5,6 +5,7 @@ import com.allin.filmface.emotion.dto.PictureDTO;
 import com.allin.filmface.emotion.entity.Picture;
 import com.allin.filmface.emotion.service.EmotionService;
 import com.allin.filmface.emotion.service.PictureService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+
 @Api(tags = "감정분석 관련 API")
 @RestController
 @AllArgsConstructor
@@ -32,7 +34,7 @@ public class EmotionController {
     private final PictureService pictureService;
 
     @PostMapping("/emotion")
-    @CrossOrigin(origins = "http://127.0.0.1:3000/takepictureanalyze, http://127.0.0.1:5000/analyze", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, exposedHeaders = "Content-Type")
+    @CrossOrigin(origins = {"http://127.0.0.1:3000", "http://127.0.0.1:5000"}, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, exposedHeaders = "Content-Type")
     public ResponseEntity<EmotionDTO> analyzeEmotion(@RequestPart("emotionDTO") EmotionDTO emotionDTO, @RequestPart("file") MultipartFile file) throws Exception {
         try {
             // React에서 보낸 사진 파일을 PictureService를 사용하여 저장합니다.
@@ -43,21 +45,20 @@ public class EmotionController {
             // Call the service to save the picture and get the updated PictureDTO
             Picture savedPictureDTO = pictureService.save(pictureDTO, file.getBytes());
 
-            // Flask 서버에 사진 파일을 전송하고 결과를 받습니다.
-            String jsonResult = sendFileToFlask(savedPictureDTO);
+            // Flask 서버에 파일을 보내고 결과를 받습니다.
+            EmotionDTO emotionDTOWithResults = sendFileToFlask(savedPictureDTO);
 
-            // json 결과를 EmotionDTO 객체로 변환합니다.
-            ObjectMapper mapper = new ObjectMapper();
-            EmotionDTO result = mapper.readValue(jsonResult, EmotionDTO.class);
-
-            // EmotionDTO 객체를 반환합니다.
-            return ResponseEntity.ok(result);
+            if (emotionDTOWithResults != null) {
+                return ResponseEntity.ok(emotionDTOWithResults);
+            } else {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to analyze emotion.");
+            }
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to analyze emotion.", e);
         }
     }
 
-    private String sendFileToFlask(Picture pictureDTO) throws IOException {
+    private EmotionDTO sendFileToFlask(Picture pictureDTO) throws IOException {
         // Flask 서버에 파일을 보내고 결과를 받는 로직입니다.
         URL url = new URL("http://127.0.0.1:5000/analyze");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -77,7 +78,18 @@ public class EmotionController {
             // 성공
             InputStream inputStream = connection.getInputStream();
             byte[] responseBytes = inputStream.readAllBytes();
-            return new String(responseBytes);
+
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> resultMap = mapper.readValue(new String(responseBytes), new TypeReference<Map<String, String>>() {
+            });
+
+            // Create a new EmotionDTO object with the updated emotion results
+            EmotionDTO emotionDTOWithResults = new EmotionDTO();
+            emotionDTOWithResults.setEmotionResult(resultMap.get("dominant_emotion"));
+            emotionDTOWithResults.setEmotionAge(resultMap.get("age"));
+            emotionDTOWithResults.setEmotionGender(resultMap.get("dominant_gender"));
+
+            return emotionDTOWithResults;
         } else {
             // 실패
             return null;
