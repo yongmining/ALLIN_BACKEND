@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Arrays;
+import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,9 +24,8 @@ public class Picture {
 
     @ManyToOne
     @JoinColumn(name = "MEMBER_NO", referencedColumnName = "MEMBER_NO")
-    @JsonBackReference
     private Member member;
-
+    //멤버하나 사진여러개
     @Lob
     @Column(name = "IMAGE")
     private byte[] image; // Byte array to store image data

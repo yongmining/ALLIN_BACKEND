@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Entity(name= "Emotion")
 @Table(name = "EMOTION")
 public class Emotion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EMOTION_NO")
@@ -23,6 +24,15 @@ public class Emotion {
     @Column(name = "MEMBER_NO")
     private Integer memberNo;
 
+    @OneToOne
+    @JoinColumn(name = "PICTURE_NO", referencedColumnName = "PICTURE_NO")
+    @JsonBackReference
+    private Picture picture;
+    // 사진하나에 감정하나
+    // Constructors, getters, and settersl
 
-
+    //public void setEmotionResult(String emotionResult) {
+    //    this.emotionResult = emotionResult;
+    //}
 }
+
