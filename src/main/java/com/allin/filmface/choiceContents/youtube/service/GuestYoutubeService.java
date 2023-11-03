@@ -1,31 +1,31 @@
 package com.allin.filmface.choiceContents.youtube.service;
 
 import com.allin.filmface.choiceContents.auth.Auth;
-import com.allin.filmface.emotion.entity.Emotion;
-import com.allin.filmface.emotion.repository.EmotionRepository;
+import com.allin.filmface.choiceContents.youtube.entity.GuestYoutube;
+import com.allin.filmface.choiceContents.youtube.entity.Youtube;
+import com.allin.filmface.choiceContents.youtube.repository.GuestYoutubeRepository;
+import com.allin.filmface.emotion.entity.GuestEmotion;
+import com.allin.filmface.emotion.repository.GuestEmotionRepository;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchResult;
-import com.allin.filmface.choiceContents.youtube.entity.Youtube;
-import com.allin.filmface.choiceContents.youtube.repository.YoutubeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
-public class YoutubeService {
+public class GuestYoutubeService {
 
     @Autowired
-    private YoutubeRepository youtubeRepository;
+    private GuestYoutubeRepository guestYoutubeRepository;
     @Autowired
-    private EmotionRepository emotionRepository;
+    private GuestEmotionRepository guestEmotionRepository;
     @Autowired
     private Auth auth;
     private static YouTube youtube;
 
-    public List<Youtube> getYoutubeContentsByQuery(String query, Integer memberNo) {
-        List<Youtube> resultVideos = new ArrayList<>();
+    public List<GuestYoutube>getGuestYoutubeContentsByQuery(String query, Integer guestNo) {
+        List<GuestYoutube> resultVideos = new ArrayList<>();
 
         try {
             youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, request -> {
@@ -38,26 +38,28 @@ public class YoutubeService {
             search.setMaxResults(10L);
 
             List<SearchResult> searchResults = search.execute().getItems();
+            System.out.println("YouTube API Response: " + searchResults);
 
-            Emotion relatedEmotion = emotionRepository.findFirstByMemberNoOrderByEmotionNoDesc(memberNo);
+
+            GuestEmotion guestRelatedEmotion = guestEmotionRepository.findFirstByGuestNoOrderByGuestEmotionNoDesc(guestNo);
 
             for (SearchResult sr : searchResults) {
-                String youtubeTitle = sr.getSnippet().getTitle();
+                String guestYoutubeTitle = sr.getSnippet().getTitle();
 
                 // Check if video with the same title already exists in the database for the user.
-                List<Youtube> existingVideos = youtubeRepository.findByYoutubeTitleAndMemberNo(youtubeTitle, memberNo);
+                List<GuestYoutube> existingVideos = guestYoutubeRepository.findByGuestYoutubeTitleAndGuestNo(guestYoutubeTitle, guestNo);
 
                 if (existingVideos.isEmpty()) {
-                    Youtube video = new Youtube();
-                    if (relatedEmotion != null) {
-                        video.setEmotion(relatedEmotion);
-                        video.setMemberNo(memberNo);
+                    GuestYoutube video = new GuestYoutube();
+                    if (guestRelatedEmotion != null) {
+                        video.setGuestEmotion(guestRelatedEmotion);
+                        video.setGuestNo(guestNo);
                     }
-                    String youtubeLink = "https://www.youtube.com/watch?v=" + sr.getId().getVideoId();
-                    video.setYoutubeLink(youtubeLink);
-                    video.setYoutubeTitle(youtubeTitle);
+                    String guestYoutubeLink = "https://www.youtube.com/watch?v=" + sr.getId().getVideoId();
+                    video.setGuestYoutubeLink(guestYoutubeLink);
+                    video.setGuestYoutubeTitle(guestYoutubeTitle);
                     video.setThumbnailUrl(sr.getSnippet().getThumbnails().getDefault().getUrl()); // 이미지 URL 설정
-                    youtubeRepository.save(video);
+                    guestYoutubeRepository.save(video);
                     resultVideos.add(video);
                 } else {
                     // 이미 DB에 존재하는 비디오도 결과 리스트에 추가
@@ -72,5 +74,4 @@ public class YoutubeService {
         }
         return resultVideos;
     }
-
 }

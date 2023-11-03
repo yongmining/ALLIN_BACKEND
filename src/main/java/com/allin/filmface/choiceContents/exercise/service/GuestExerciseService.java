@@ -1,12 +1,12 @@
-package com.allin.filmface.choiceContents.youtube.service;
+package com.allin.filmface.choiceContents.exercise.service;
 
 import com.allin.filmface.choiceContents.auth.Auth;
-import com.allin.filmface.emotion.entity.Emotion;
-import com.allin.filmface.emotion.repository.EmotionRepository;
+import com.allin.filmface.choiceContents.exercise.entity.GuestExercise;
+import com.allin.filmface.choiceContents.exercise.repository.GuestExerciseRepository;
+import com.allin.filmface.emotion.entity.GuestEmotion;
+import com.allin.filmface.emotion.repository.GuestEmotionRepository;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchResult;
-import com.allin.filmface.choiceContents.youtube.entity.Youtube;
-import com.allin.filmface.choiceContents.youtube.repository.YoutubeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class YoutubeService {
+public class GuestExerciseService {
 
     @Autowired
-    private YoutubeRepository youtubeRepository;
+    private GuestExerciseRepository guestExerciseRepository;
     @Autowired
-    private EmotionRepository emotionRepository;
+    private GuestEmotionRepository guestEmotionRepository;
     @Autowired
     private Auth auth;
     private static YouTube youtube;
 
-    public List<Youtube> getYoutubeContentsByQuery(String query, Integer memberNo) {
-        List<Youtube> resultVideos = new ArrayList<>();
+    public List<GuestExercise> getGuestExerciseContentsByQuery(String query, Integer guestNo) {
+        List<GuestExercise> resultVideos = new ArrayList<>();
 
         try {
             youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, request -> {
@@ -38,26 +38,27 @@ public class YoutubeService {
             search.setMaxResults(10L);
 
             List<SearchResult> searchResults = search.execute().getItems();
+            System.out.println("YouTube API Response: " + searchResults);
 
-            Emotion relatedEmotion = emotionRepository.findFirstByMemberNoOrderByEmotionNoDesc(memberNo);
+            GuestEmotion guestRelatedEmotion = guestEmotionRepository.findFirstByGuestNoOrderByGuestEmotionNoDesc(guestNo);
 
             for (SearchResult sr : searchResults) {
-                String youtubeTitle = sr.getSnippet().getTitle();
+                String guestExerciseTitle = sr.getSnippet().getTitle();
 
                 // Check if video with the same title already exists in the database for the user.
-                List<Youtube> existingVideos = youtubeRepository.findByYoutubeTitleAndMemberNo(youtubeTitle, memberNo);
+                List<GuestExercise> existingVideos = guestExerciseRepository.findByGuestExerciseTitleAndGuestNo(guestExerciseTitle, guestNo);
 
                 if (existingVideos.isEmpty()) {
-                    Youtube video = new Youtube();
-                    if (relatedEmotion != null) {
-                        video.setEmotion(relatedEmotion);
-                        video.setMemberNo(memberNo);
+                    GuestExercise video = new GuestExercise();
+                    if (guestRelatedEmotion != null) {
+                        video.setGuestEmotion(guestRelatedEmotion);
+                        video.setGuestNo(guestNo);
                     }
-                    String youtubeLink = "https://www.youtube.com/watch?v=" + sr.getId().getVideoId();
-                    video.setYoutubeLink(youtubeLink);
-                    video.setYoutubeTitle(youtubeTitle);
+                    String guestExerciseLink = "https://www.youtube.com/watch?v=" + sr.getId().getVideoId();
+                    video.setGuestExerciseLink(guestExerciseLink);
+                    video.setGuestExerciseTitle(guestExerciseTitle);
                     video.setThumbnailUrl(sr.getSnippet().getThumbnails().getDefault().getUrl()); // 이미지 URL 설정
-                    youtubeRepository.save(video);
+                    guestExerciseRepository.save(video);
                     resultVideos.add(video);
                 } else {
                     // 이미 DB에 존재하는 비디오도 결과 리스트에 추가
@@ -68,9 +69,8 @@ public class YoutubeService {
         } catch (Exception e) {
             System.out.println("Error occurred: " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException("Error fetching YouTube videos", e);
+            throw new RuntimeException("Error fetching exercise videos", e);
         }
         return resultVideos;
     }
-
 }

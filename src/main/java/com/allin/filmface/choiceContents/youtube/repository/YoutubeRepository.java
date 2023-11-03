@@ -1,5 +1,6 @@
 package com.allin.filmface.choiceContents.youtube.repository;
 
+import com.allin.filmface.choiceContents.youtube.entity.GuestYoutube;
 import com.allin.filmface.choiceContents.youtube.entity.Youtube;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;

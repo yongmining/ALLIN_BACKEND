@@ -39,15 +39,20 @@ public class ExerciseController {
             // 감정에 따른 운동 추천 쿼리를 설정합니다.
             // (실제 쿼리 내용은 프로젝트에 따라 변경해야 합니다.)
             switch (emotionResult) {
-                case "슬픔":
+                case "Sad":
                     query = "힐링 운동";
                     break;
-                case "화남":
+                case "Angry":
                     query = "에너지 소모 운동";
                     break;
-                case "무표정":
-                case "행복":
+                case "Neutral":
+                case "Happy":
                     query = "기본 스트레칭";
+                    break;
+                case "Surprise":
+                case "Disgust":
+                case "Fear":
+                    query = "조용한 운동";
                     break;
                 default:
                     exerciseList = new ArrayList<>();
