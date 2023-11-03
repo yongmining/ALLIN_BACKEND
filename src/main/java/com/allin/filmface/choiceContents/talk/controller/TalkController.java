@@ -1,21 +1,19 @@
 package com.allin.filmface.choiceContents.talk.controller;
 
-import com.allin.filmface.choiceContents.talk.dto.TalkDTO;
+import com.allin.filmface.choiceContents.talk.dto.TalkRequestDTO;
+import com.allin.filmface.choiceContents.talk.dto.TalkResponseDTO;
+import com.allin.filmface.choiceContents.talk.entity.TalkRequest;
+import com.allin.filmface.choiceContents.talk.entity.TalkResponse;
 import com.allin.filmface.choiceContents.talk.service.TalkService;
-import com.allin.filmface.common.ResponseDTO;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
+
 
 @Api(tags = "소통 관련 API")
 @RestController
@@ -23,43 +21,50 @@ import java.util.Map;
 @AllArgsConstructor
 public class TalkController {
 
-    private final TalkService talkService;
+    private TalkService talkService;
 
     @PostMapping("/add")
-    public ResponseEntity<ResponseDTO> addTalk(@RequestBody TalkDTO talkDTO) {
-        // DTO를 엔티티로 변환하여 저장
-        TalkDTO addedTalk = talkService.addTalk(talkDTO);
+    public TalkResponseDTO addTalk(@RequestBody TalkRequestDTO talkRequestDTO) {
 
-        // 대화 데이터를 준비합니다.
-        List<Map<String, String>> messages = new ArrayList<>();
-        Map<String, String> userMessage = new HashMap<>();
-        userMessage.put("role", "user");
-        userMessage.put("content", talkDTO.getUserMessage());
-        messages.add(userMessage);
 
-        // OpenAI API를 호출하고 응답을 가져옵니다.
-        String openAIResponse = talkService.callOpenAIChatAPI(messages.toString());
-
-        // OpenAI 응답을 BotMessage에 설정합니다.
-        addedTalk.setBotMessage(openAIResponse);
-
-        // ResponseDTO를 생성하고 반환합니다.
-        ResponseDTO responseDTO = new ResponseDTO(HttpStatus.OK, "대화가 추가되었습니다.", addedTalk);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-        return ResponseEntity.ok().headers(headers).body(responseDTO);
+        return talkService.addTalkRequestAndResponse(talkRequestDTO);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<ResponseDTO> getAllTalks() {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+    @GetMapping("/history/{userNo}")
+    public ResponseEntity<List<TalkRequestDTO>> getTalkHistoryByUserNo(@PathVariable int userNo) {
+        List<TalkRequest> talkHistory = talkService.getTalkHistoryByUserNo(userNo);
 
-        List<TalkDTO> allTalks = talkService.getAllTalks();
-        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "모든 대화 목록", allTalks));
+        // TalkRequest 엔티티를 TalkRequestDTO로 매핑 (DTO 클래스는 필요에 따라 생성)
+        List<TalkRequestDTO> talkHistoryDTO = talkHistory.stream()
+                .map(this::mapTalkRequestToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(talkHistoryDTO);
     }
 
+    private TalkRequestDTO mapTalkRequestToDTO(TalkRequest talkRequest) {
+        TalkRequestDTO dto = new TalkRequestDTO();
+        dto.setTalkRequestNo(talkRequest.getTalkRequestNo());
+        dto.setUserNo(talkRequest.getUserNo());
+        dto.setUserNickname(talkRequest.getUserNickname());
+        dto.setUserType(talkRequest.getUserType());
+        dto.setRequestWriteDate(talkRequest.getRequestWriteDate());
+        dto.setUserMessage(talkRequest.getUserMessage());
+        dto.setChatRequestCount(talkRequest.getChatRequestCount());
+
+        // Response 엔티티를 DTO로 매핑
+        if (talkRequest.getTalkResponse() != null) {
+            TalkResponse talkResponse = talkRequest.getTalkResponse();
+            TalkResponseDTO responseDTO = new TalkResponseDTO();
+            responseDTO.setTalkResponseNo(talkResponse.getTalkResponseNo());
+            responseDTO.setResponseWriteDate(talkResponse.getResponseWriteDate());
+            responseDTO.setBotMessage(talkResponse.getBotMessage());
+            responseDTO.setRequestNo(talkRequest.getTalkRequestNo());
+            dto.setResponseNo(responseDTO);
+        }
+
+        return dto;
+    }
 }
+

@@ -1,109 +1,83 @@
 package com.allin.filmface.choiceContents.talk.service;
 
-import com.allin.filmface.choiceContents.talk.dto.TalkDTO;
-import com.allin.filmface.choiceContents.talk.entity.Talk;
-import com.allin.filmface.choiceContents.talk.repository.TalkRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import com.allin.filmface.choiceContents.talk.dto.TalkRequestDTO;
+import com.allin.filmface.choiceContents.talk.dto.TalkResponseDTO;
+import com.allin.filmface.choiceContents.talk.entity.TalkRequest;
+import com.allin.filmface.choiceContents.talk.entity.TalkResponse;
+import com.allin.filmface.choiceContents.talk.repository.TalkRequestRepository;
+import com.allin.filmface.choiceContents.talk.repository.TalkResponseRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 
 @Service
+@AllArgsConstructor
 public class TalkService {
 
-    private final TalkRepository talkRepository;
+    private final TalkRequestRepository talkRequestRepository;
+    private final TalkResponseRepository talkResponseRepository;
 
-    @Value("${openai.apiKey}")
-    private String openaiApiKey;
+    @Transactional
+    public TalkResponseDTO addTalkRequestAndResponse(TalkRequestDTO talkRequestDTO) {
 
-    @Autowired
-    public TalkService(TalkRepository talkRepository) {
-        this.talkRepository = talkRepository;
-    }
+        TalkResponseDTO response = callExternalService(talkRequestDTO);
 
-    public TalkDTO addTalk(TalkDTO talkDTO) {
-        // DTO를 엔티티로 변환하여 저장
-        Talk talk = new Talk();
-        talk.setChatUser(talkDTO.getChatUser());
-        talk.setChatBot(talkDTO.getChatBot());
-        talk.setWriteDate(talkDTO.getWriteDate());
-        talk.setUserMessage(talkDTO.getUserMessage());
-        talk.setBotMessage(talkDTO.getBotMessage());
-
-        Talk savedTalk = talkRepository.save(talk);
-
-        // 저장된 엔티티를 DTO로 변환하여 반환
-        return convertToDTO(savedTalk);
-    }
-
-    public String callOpenAIChatAPI(String Message) {
-        RestTemplate rt = new RestTemplate();
-
-        // OpenAI API에 대화 요청 보내기
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        headers.add("Authorization", "Bearer " + openaiApiKey);
-
-        Map<String, Object> requestBody = new HashMap<>();
-        List<Map<String, String>> messages = new ArrayList<>();
-
-        // 요청 데이터 구성
-        Map<String, String> userMessageMap = new HashMap<>();
-        userMessageMap.put("role", "user");
-        userMessageMap.put("content", Message);
-        messages.add(userMessageMap);
-
-        requestBody.put("messages", messages);
-
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        ResponseEntity<Map> responseEntity = rt.exchange(
-                "http://localhost:5050/chat",
-                HttpMethod.POST,
-                requestEntity,
-                Map.class
-        );
-
-        Map<String, Object> responseMap = responseEntity.getBody();
-        if (responseMap != null && responseMap.containsKey("botMessage") && responseMap.containsKey("writeDate")) {
-            String botMessage = (String) responseMap.get("botMessage");
-            String writeDate = (String) responseMap.get("writeDate");
-
-            return botMessage;
+        if (response != null && response.getBotMessage() != null) {
+            TalkRequest talkRequest = saveTalkRequest(talkRequestDTO);
+            saveTalkResponse(response, talkRequest);
+            return response;
+        } else {
+            throw new RuntimeException("FastAPI로부터 응답을 받지 못했습니다.");
         }
+    }
 
-        return null; // 실패 시 null 반환 또는 예외 처리
+    private TalkResponseDTO callExternalService(TalkRequestDTO talkRequestDTO) {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.postForObject(
+                "http://localhost:5050/chat",
+                talkRequestDTO,
+                TalkResponseDTO.class
+        );
+    }
+
+    private TalkRequest saveTalkRequest(TalkRequestDTO talkRequestDTO) {
+        TalkRequest talkRequest = mapDtoToTalkRequestEntity(talkRequestDTO);
+        talkRequestRepository.save(talkRequest);
+        return talkRequest;
+    }
+
+    private TalkRequest mapDtoToTalkRequestEntity(TalkRequestDTO talkRequestDTO) {
+        TalkRequest talkRequest = new TalkRequest();
+        talkRequest.setUserNickname(talkRequestDTO.getUserNickname());
+        talkRequest.setUserType(talkRequestDTO.getUserType());
+        talkRequest.setRequestWriteDate(LocalDateTime.now());
+        talkRequest.setUserNo(talkRequestDTO.getUserNo());
+        talkRequest.setUserMessage(talkRequestDTO.getUserMessage());
+        talkRequest.setChatRequestCount(talkRequestDTO.getChatRequestCount());
+
+
+        return talkRequest;
+    }
+
+    private void saveTalkResponse(TalkResponseDTO responseDTO, TalkRequest talkRequest) {
+        TalkResponse talkResponse = new TalkResponse();
+        talkResponse.setBotMessage(responseDTO.getBotMessage());
+        talkResponse.setResponseWriteDate(LocalDateTime.now());
+        talkResponse.setTalkRequest(talkRequest);
+
+        talkResponseRepository.save(talkResponse);
     }
 
 
-    public List<TalkDTO> getAllTalks() {
-        // 모든 대화를 엔티티로부터 조회
-        List<Talk> allTalks = talkRepository.findAll();
+    public List<TalkRequest> getTalkHistoryByUserNo(int userNo) {
+        List<TalkRequest> talkHistory = talkRequestRepository.findTalkRequestsWithResponseByUserNo(userNo);
 
-        // 엔티티 리스트를 DTO 리스트로 변환하여 반환
-        return allTalks.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    private TalkDTO convertToDTO(Talk talk) {
-        TalkDTO talkDTO = new TalkDTO();
-        talkDTO.setTalkNo(talk.getTalkNo());
-        talkDTO.setChatUser(talk.getChatUser());
-        talkDTO.setChatBot(talk.getChatBot());
-        talkDTO.setWriteDate(talk.getWriteDate());
-        talkDTO.setUserMessage(talk.getUserMessage());
-        talkDTO.setBotMessage(talk.getBotMessage());
-        return talkDTO;
+        return talkHistory;
     }
 }
-
 
