@@ -45,9 +45,14 @@ public class ExerciseController {
                 case "Angry":
                     query = "에너지 소모 운동";
                     break;
-                case "무표정":
-                case "행복":
+                case "Neutral":
+                case "Happy":
                     query = "기본 스트레칭";
+                    break;
+                case "Surprise":
+                case "Disgust":
+                case "Fear":
+                    query = "조용한 운동";
                     break;
                 default:
                     exerciseList = new ArrayList<>();

@@ -1,11 +1,10 @@
-package com.allin.filmface.choiceContents.youtube.controller;
+package com.allin.filmface.choiceContents.exercise.controller;
 
-
-import com.allin.filmface.choiceContents.youtube.entity.Youtube;
-import com.allin.filmface.choiceContents.youtube.service.YoutubeService;
+import com.allin.filmface.choiceContents.exercise.entity.GuestExercise;
+import com.allin.filmface.choiceContents.exercise.service.GuestExerciseService;
 import com.allin.filmface.common.ResponseDTO;
-import com.allin.filmface.emotion.entity.Emotion;
-import com.allin.filmface.emotion.repository.EmotionRepository;
+import com.allin.filmface.emotion.entity.GuestEmotion;
+import com.allin.filmface.emotion.repository.GuestEmotionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,50 +16,49 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1")
 @AllArgsConstructor
-public class YoutubeController {
+public class GuestExerciseController {
 
     @Autowired
-    private YoutubeService youtubeService;
+    private GuestEmotionRepository guestEmotionRepository;
     @Autowired
-    private EmotionRepository emotionRepository;
+    private GuestExerciseService guestExerciseService;
 
-
-    @GetMapping("/youtube/emotion")
-    public ResponseEntity<ResponseDTO> getYoutubeVideosBasedOnEmotion(@RequestParam(name = "memberNo") Integer memberNo) {
-        // 해당 memberNo의 마지막 emotionResult를 가져옵니다.
-        Emotion recentEmotion = emotionRepository.findFirstByMemberNoOrderByEmotionNoDesc(memberNo);
-        List<Youtube> youtubeList;
+    @GetMapping("/guestExercise/emotion")
+    public ResponseEntity<ResponseDTO> getExerciseVideosBasedOnGuestEmotion(@RequestParam(name = "guestNo") Integer guestNo) {
+        GuestEmotion recentEmotion = guestEmotionRepository.findFirstByGuestNoOrderByGuestEmotionNoDesc(guestNo);
+        List<GuestExercise> youtubeList;
         if (recentEmotion == null) {
             youtubeList = new ArrayList<>();
         } else {
-            String emotionResult = recentEmotion.getEmotionResult();
+            String guestEmotionResult = recentEmotion.getGuestEmotionResult();
             String query = "";
-            switch(emotionResult) {
+            switch (guestEmotionResult) {
                 case "Sad":
-                    query = "슬픔을 극복하기";
+                    query = "힐링 운동";
                     break;
                 case "Angry":
-                    query = "화날 때 볼만한 영상";
+                    query = "에너지 소모 운동";
                     break;
                 case "Neutral":
                 case "Happy":
-                    query = "재밌는 영상";
+                    query = "기본 스트레칭";
                     break;
                 case "Surprise":
                 case "Disgust":
                 case "Fear":
-                    query = "차분한 영상";
+                    query = "조용한 운동";
                     break;
                 default:
                     youtubeList = new ArrayList<>();
                     return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "조회성공", youtubeList));
             }
-            youtubeList = youtubeService.getYoutubeContentsByQuery(query, memberNo);
-        }
 
+            youtubeList = guestExerciseService.getGuestExerciseContentsByQuery(query, guestNo);
+        }
         return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "조회성공", youtubeList));
     }
 }

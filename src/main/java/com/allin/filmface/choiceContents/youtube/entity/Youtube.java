@@ -1,9 +1,7 @@
 package com.allin.filmface.choiceContents.youtube.entity;
 
-import com.allin.filmface.choiceContents.youtube.dto.YoutubeDTO;
 import com.allin.filmface.emotion.entity.Emotion;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
