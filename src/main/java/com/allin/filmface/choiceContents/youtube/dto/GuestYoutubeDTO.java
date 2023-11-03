@@ -1,22 +1,18 @@
 package com.allin.filmface.choiceContents.youtube.dto;
 
-
 import lombok.*;
-
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 @ToString
-public class YoutubeDTO {
+public class GuestYoutubeDTO {
 
-    private int youtubeNo;
+    private int guestYoutubeNo;
 
-    private  String youtubeLink;
+    private  String guestYoutubeLink;
 
-    private String youtubeTitle;
-
+    private String guestYoutubeTitle;
 
 }

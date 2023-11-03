@@ -1,10 +1,10 @@
 package com.allin.filmface.choiceContents.music.controller;
 
-import com.allin.filmface.choiceContents.music.entity.Music;
-import com.allin.filmface.choiceContents.music.service.MusicService;
+import com.allin.filmface.choiceContents.music.entity.GuestMusic;
+import com.allin.filmface.choiceContents.music.service.GuestMusicService;
 import com.allin.filmface.common.ResponseDTO;
-import com.allin.filmface.emotion.entity.Emotion;
-import com.allin.filmface.emotion.repository.EmotionRepository;
+import com.allin.filmface.emotion.entity.GuestEmotion;
+import com.allin.filmface.emotion.repository.GuestEmotionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,23 +20,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @AllArgsConstructor
-public class MusicController {
-
+public class GuestMusicController {
     @Autowired
-    private MusicService musicService;
+    private GuestEmotionRepository guestEmotionRepository;
     @Autowired
-    private EmotionRepository emotionRepository;
+    private GuestMusicService guestMusicService;
 
-    @GetMapping("/music/emotion")
-    public ResponseEntity<ResponseDTO> getMusicBasedOnEmotion(@RequestParam(name = "memberNo") Integer memberNo) {
-        Emotion recentEmotion = emotionRepository.findFirstByMemberNoOrderByEmotionNoDesc(memberNo);
-        List<Music> musicList;
+    @GetMapping("/guestMusic/emotion")
+    public ResponseEntity<ResponseDTO> getMusicVideosBasedOnGuestEmotion(@RequestParam(name = "guestNo") Integer guestNo) {
+        GuestEmotion recentEmotion = guestEmotionRepository.findFirstByGuestNoOrderByGuestEmotionNoDesc(guestNo);
+        List<GuestMusic> youtubeList;
         if (recentEmotion == null) {
-            musicList = new ArrayList<>();
+            youtubeList = new ArrayList<>();
         } else {
-            String emotionResult = recentEmotion.getEmotionResult();
+            String guestEmotionResult = recentEmotion.getGuestEmotionResult();
             String query = "";
-            switch (emotionResult) {
+            switch (guestEmotionResult) {
                 case "Sad":
                     query = "슬픈 노래";
                     break;
@@ -53,12 +52,11 @@ public class MusicController {
                     query = "잔잔한 노래";
                     break;
                 default:
-                    musicList = new ArrayList<>();
-                    return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "조회성공", musicList));
+                    youtubeList = new ArrayList<>();
+                    return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "조회성공", youtubeList));
             }
-            musicList = musicService.getMusicContentsByQuery(query, memberNo);
+            youtubeList = guestMusicService.getGuestMusicContentsByQuery(query, guestNo);
         }
-            return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "조회성공", musicList));
-        }
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "조회성공", youtubeList));
     }
-
+}
