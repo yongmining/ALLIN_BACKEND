@@ -16,6 +16,7 @@ public class BookDTO {
     private String author;
     private byte[] imageData; // 이미지 데이터를 저장하는 필드
     private String emotionResult;
+    private Integer niceCount;
 
 
     public void setImageData(byte[] imageData) {

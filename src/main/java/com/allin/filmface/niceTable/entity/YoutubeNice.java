@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Getter
 @ToString
 @Entity(name= "YoutubeNice")
-@Table(name = "YOUTUBENICE", uniqueConstraints = @UniqueConstraint(columnNames = {"MEMBER_NO", "YOUTUBE_NO"}))
+@Table(name = "YOUTUBENICE", uniqueConstraints = @UniqueConstraint(columnNames = {"MEMBER_NO", "YOUTUBE_LINK"}))
 public class YoutubeNice {
 
     @Id
@@ -25,14 +25,16 @@ public class YoutubeNice {
     @Comment("좋아요 번호")
     private int niceNo;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "YOUTUBE_NO", referencedColumnName = "YOUTUBE_NO")
+
+    @ManyToOne
+    @JoinColumn(name = "YOUTUBE_LINK", referencedColumnName = "YOUTUBE_LINK")
     @JsonBackReference
-    private Youtube youtubeNo;
+    private Youtube youtube;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MEMBER_NO", referencedColumnName = "MEMBER_NO")
     @JsonBackReference
     private Member member;
+
 
 }

@@ -1,5 +1,6 @@
 package com.allin.filmface.niceTable.controller;
 
+import com.allin.filmface.choiceContents.youtube.dto.YoutubeDTO;
 import com.allin.filmface.choiceContents.youtube.entity.Youtube;
 import com.allin.filmface.niceTable.dto.YoutubeNiceDTO;
 import com.allin.filmface.niceTable.entity.Nice;
@@ -24,27 +25,28 @@ public class NiceController {
         this.niceService = niceService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Void> createYoutubeNice(@RequestBody YoutubeNiceDTO youtubeNiceDTO) {
-        System.out.println(youtubeNiceDTO);
-        niceService.createOrCancelYoutubeNice(youtubeNiceDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PostMapping("/createOrCancelNice")
+    public ResponseEntity<String> createOrCancelNice(@RequestBody YoutubeNiceDTO youtubeniceDTO) {
+        niceService.createOrCancelYoutubeNice(youtubeniceDTO);
+        System.out.println("Received member_No: " + youtubeniceDTO.getMember().getMemberNo());
+        return new ResponseEntity<>("Nice created or canceled successfully", HttpStatus.OK);
     }
-    @GetMapping("/nicecount/{youtubeNo}")
-    public ResponseEntity<Long> getNiceCount(@PathVariable int youtubeNo) {
-        Long count = niceService.getNiceCountForYoutube(youtubeNo);
+
+    @GetMapping("/nicecount/{youtubeLink}")
+    public ResponseEntity<Long> getNiceCount(@PathVariable String youtubeLink) {
+        Long count = niceService.getNiceCountForYoutube(youtubeLink);
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
-//    @GetMapping("/recommendations/{memberNo}")
-//    public ResponseEntity<List<Youtube>> getRecommendedVideosByAge(@PathVariable int memberNo) {
-//        List<Youtube> recommendedVideos = niceService.getRecommendedVideosByAge(memberNo);
-//        return new ResponseEntity<>(recommendedVideos, HttpStatus.OK);
-//    }
 
     @GetMapping("/recommendations/emotion-age/{memberNo}")
-    public ResponseEntity<List<Youtube>> getRecommendedVideosByEmotionAndAge(@PathVariable int memberNo) {
-        List<Youtube> recommendedVideos = niceService.getRecommendedVideosByEmotionAndAge(memberNo);
+    public ResponseEntity<List<YoutubeDTO>> getRecommendedVideosByEmotionAndAge(@PathVariable int memberNo) {
+        List<YoutubeDTO> recommendedVideos = niceService.getRecommendedVideosByEmotionAndAge(memberNo);
+        System.out.println("Recommended videos count: " + recommendedVideos.size());
         return new ResponseEntity<>(recommendedVideos, HttpStatus.OK);
     }
+    // YOUTUBE
+
+
+
 
 }

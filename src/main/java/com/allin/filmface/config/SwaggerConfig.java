@@ -23,7 +23,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket swaggerApi() {
-        return new Docket(DocumentationType.SWAGGER_2).consumes(getConsumeContentTypes()).produces(getProduceContentTypes()).apiInfo(swaggerInfo()).select().apis(RequestHandlerSelectors.basePackage("com.nasigolang.ddbnb")).paths(PathSelectors.any()).build().useDefaultResponseMessages(false);
+        return new Docket(DocumentationType.SWAGGER_2).consumes(getConsumeContentTypes()).produces(getProduceContentTypes()).apiInfo(swaggerInfo()).select().apis(RequestHandlerSelectors.basePackage("com.alllin.filmface")).paths(PathSelectors.any()).build().useDefaultResponseMessages(false);
     }
 
     private Set<String> getConsumeContentTypes() {

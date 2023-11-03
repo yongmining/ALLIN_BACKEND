@@ -10,8 +10,10 @@ import com.google.api.services.youtube.model.SearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MusicService {
@@ -27,6 +29,30 @@ public class MusicService {
 
     private static YouTube youtube;
 
+
+    @Transactional
+    public void incrementMusicNiceCountByLink(String musicLink) {
+        Optional<Music> musicOptional = musicRepository.findByMusicLink(musicLink);
+        if (musicOptional.isPresent()) {
+            Music music = musicOptional.get();
+            music.setNiceCount(music.getNiceCount() + 1);
+            musicRepository.save(music);
+        } else {
+            throw new RuntimeException("Music not found");
+        }
+    }
+
+    @Transactional
+    public void decrementMusicNiceCountByLink(String musicLink) {
+        Optional<Music> musicOptional = musicRepository.findByMusicLink(musicLink);
+        if (musicOptional.isPresent()) {
+            Music music = musicOptional.get();
+            music.setNiceCount(music.getNiceCount() - 1);
+            musicRepository.save(music);
+        } else {
+            throw new RuntimeException("Music not found");
+        }
+    }
     public List<Music> getMusicContentsByQuery(String query, Integer memberNo) {
         List<Music> resultMusics = new ArrayList<>();
 

@@ -15,6 +15,6 @@ public class YoutubeNiceDTO {
 
     private int niceNo;
     private int youtubeNo;
-
+    private String youtubeLink;
 
 }

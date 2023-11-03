@@ -14,4 +14,5 @@ public class ExerciseNiceDTO {
 
     private int niceNo;
     private int ExerciseNo;
+    private String exerciseLink;
 }

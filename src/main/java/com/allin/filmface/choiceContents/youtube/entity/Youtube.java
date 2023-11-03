@@ -8,14 +8,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity(name = "Youtube")
-@Table(name = "youtube")
+@Table(name = "youtube" )
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Youtube {
+public class Youtube implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +27,6 @@ public class Youtube {
 
     @Column(name = "YOUTUBE_LINK")
     private String youtubeLink;
-
 
 
     @Column(name = "YOUTUBE_TITLE")
@@ -39,6 +41,12 @@ public class Youtube {
     @JsonBackReference
     private Emotion emotion;
 
+
+    @Column(name = "NICE_COUNT")
+    private Integer niceCount = 0;
+    public Integer getNiceCount() {
+        return niceCount == null ? 0 : niceCount; // null 체크 추가
+    }
 
     private Integer memberNo;
 }

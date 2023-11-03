@@ -10,8 +10,10 @@ import com.allin.filmface.choiceContents.youtube.repository.YoutubeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class YoutubeService {
@@ -23,6 +25,33 @@ public class YoutubeService {
     @Autowired
     private Auth auth;
     private static YouTube youtube;
+
+
+
+
+    @Transactional
+    public void incrementNiceCountByLink(String youtubeLink) {
+        Optional<Youtube> youtubeOptional = youtubeRepository.findByYoutubeLink(youtubeLink);
+        if (youtubeOptional.isPresent()) {
+            Youtube youtube = youtubeOptional.get();
+            youtube.setNiceCount(youtube.getNiceCount() + 1);
+            youtubeRepository.save(youtube);
+        } else {
+            throw new RuntimeException("Youtube not found");
+        }
+    }
+
+    @Transactional
+    public void decrementNiceCountByLink(String youtubeLink) {
+        Optional<Youtube> youtubeOptional = youtubeRepository.findByYoutubeLink(youtubeLink);
+        if (youtubeOptional.isPresent()) {
+            Youtube youtube = youtubeOptional.get();
+            youtube.setNiceCount(youtube.getNiceCount() - 1);
+            youtubeRepository.save(youtube);
+        } else {
+            throw new RuntimeException("Youtube not found");
+        }
+    }
 
     public List<Youtube> getYoutubeContentsByQuery(String query, Integer memberNo) {
         List<Youtube> resultVideos = new ArrayList<>();

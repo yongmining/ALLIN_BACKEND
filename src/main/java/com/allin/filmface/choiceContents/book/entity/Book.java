@@ -40,6 +40,11 @@ public class Book {
     @JoinColumn(name = "EMOTION_NO", referencedColumnName = "EMOTION_NO")
     private Emotion emotion;
 
+    @Column(name = "NICE_COUNT")
+    private Integer niceCount = 0;
+    public Integer getNiceCount() {
+        return niceCount == null ? 0 : niceCount; // null 체크 추가
+    }
 
 
 }

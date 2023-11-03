@@ -26,6 +26,7 @@
 
 
 
+
           jpa:
             generate-ddl: true #개발 : true 운영: false 스키마 자동생성 기능
             show-sql: true  #개발 : true 운영: false SQL쿼리 출력

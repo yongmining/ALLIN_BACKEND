@@ -1,5 +1,6 @@
 package com.allin.filmface.choiceContents.music.dto;
 
+import com.allin.filmface.member.dto.MemberSimpleDTO;
 import lombok.*;
 
 @AllArgsConstructor
@@ -13,6 +14,13 @@ public class MusicDTO {
 
     private  String musicLink;
 
+    private Integer niceCount;
+
     private String musicTitle;
+
+    private MemberSimpleDTO member;
+
+    private String thumbnailUrl;
+
 
 }
