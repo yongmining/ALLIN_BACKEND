@@ -38,14 +38,14 @@ public class YoutubeController {
             String emotionResult = recentEmotion.getEmotionResult();
             String query = "";
             switch(emotionResult) {
-                case "슬픔":
+                case "Sad":
                     query = "슬플 때 볼만한 영상";
                     break;
-                case "화남":
+                case "Angry":
                     query = "화날 때 볼만한 영상";
                     break;
-                case "무표정":
-                case "행복":
+                case "natural":
+                case "happy":
                     query = "재밌는 영상";
                     break;
                 case "놀람":

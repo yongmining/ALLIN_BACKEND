@@ -37,10 +37,10 @@ public class MusicController {
             String emotionResult = recentEmotion.getEmotionResult();
             String query = "";
             switch (emotionResult) {
-                case "슬픔":
+                case "Sad":
                     query = "슬픈 노래";
                     break;
-                case "화남":
+                case "Angry":
                     query = "잔잔한 노래";
                     break;
                 case "무표정":

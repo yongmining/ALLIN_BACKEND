@@ -15,6 +15,6 @@ public class MusicNiceDTO {
 
     private int niceNo;
     private int musicno;
-
+    private String musicLink;
 
 }

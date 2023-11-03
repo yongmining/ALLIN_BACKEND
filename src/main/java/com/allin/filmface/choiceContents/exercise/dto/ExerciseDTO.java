@@ -1,5 +1,6 @@
 package com.allin.filmface.choiceContents.exercise.dto;
 
+import com.allin.filmface.member.dto.MemberSimpleDTO;
 import lombok.*;
 
 @AllArgsConstructor
@@ -12,9 +13,13 @@ public class ExerciseDTO {
 
     private String exerciseLink;
 
-
+    private Integer niceCount;
 
     private  String exerciseTitle;
+
+    private MemberSimpleDTO member;
+
+    private String thumbnailUrl;
 
 
 

@@ -36,5 +36,11 @@ public class Music {
     @JsonBackReference
     private Emotion emotion;
 
+    @Column(name = "NICE_COUNT")
+    private Integer niceCount = 0;
+    public Integer getNiceCount() {
+        return niceCount == null ? 0 : niceCount; // null 체크 추가
+    }
+
     private Integer memberNo;
 }

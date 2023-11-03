@@ -14,4 +14,6 @@ public class BookNiceDTO {
 
     private int niceNo;
     private int bookNo;
+    private String bookTitle;
+
 }

@@ -1,6 +1,7 @@
 package com.allin.filmface.choiceContents.youtube.dto;
 
 
+import com.allin.filmface.member.dto.MemberSimpleDTO;
 import lombok.*;
 
 import java.util.List;
@@ -16,8 +17,12 @@ public class YoutubeDTO {
 
     private  String youtubeLink;
 
+    private Integer niceCount;
 
     private String youtubeTitle;
 
+    private MemberSimpleDTO member;
+
+    private String thumbnailUrl;
 
 }

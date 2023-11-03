@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity(name = "Exercise")
 @Table(name = "exercise")
@@ -15,7 +16,10 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Exercise {
+public class Exercise implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EXERCISE_NO")
@@ -33,11 +37,16 @@ public class Exercise {
     private String thumbnailUrl;
 
 
-
     @ManyToOne
     @JoinColumn(name = "EMOTION_NO", referencedColumnName = "EMOTION_NO")
     @JsonBackReference
     private Emotion emotion;
+
+    @Column(name = "NICE_COUNT")
+    private Integer niceCount = 0;
+    public Integer getNiceCount() {
+        return niceCount == null ? 0 : niceCount; // null 체크 추가
+    }
 
     private Integer memberNo;
 }

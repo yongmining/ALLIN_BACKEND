@@ -10,8 +10,10 @@ import com.google.api.services.youtube.model.SearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ExerciseService {
@@ -27,6 +29,30 @@ public class ExerciseService {
 
     private static YouTube youtube;
 
+
+    @Transactional
+    public void incrementExerciseNiceCountByLink(String exerciseLink) {
+        Optional<Exercise> exerciseOptional = exerciseRepository.findByExerciseLink(exerciseLink);
+        if (exerciseOptional.isPresent()) {
+            Exercise exercise = exerciseOptional.get();
+            exercise.setNiceCount(exercise.getNiceCount() + 1);
+            exerciseRepository.save(exercise);
+        } else {
+            throw new RuntimeException("Exercise not found");
+        }
+    }
+
+    @Transactional
+    public void decrementExerciseNiceCountByLink(String exerciseLink) {
+        Optional<Exercise> exerciseOptional = exerciseRepository.findByExerciseLink(exerciseLink);
+        if (exerciseOptional.isPresent()) {
+            Exercise exercise = exerciseOptional.get();
+            exercise.setNiceCount(exercise.getNiceCount() - 1);
+            exerciseRepository.save(exercise);
+        } else {
+            throw new RuntimeException("Exercise not found");
+        }
+    }
     public List<Exercise> getExerciseContentsByQuery(String query, Integer memberNo) {
         List<Exercise> resultExercises = new ArrayList<>();
 
