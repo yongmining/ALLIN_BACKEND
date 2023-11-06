@@ -58,7 +58,6 @@ public class TalkService {
         talkRequest.setRequestWriteDate(LocalDateTime.now());
         talkRequest.setUserNo(talkRequestDTO.getUserNo());
         talkRequest.setUserMessage(talkRequestDTO.getUserMessage());
-        talkRequest.setChatRequestCount(talkRequestDTO.getChatRequestCount());
 
 
         return talkRequest;

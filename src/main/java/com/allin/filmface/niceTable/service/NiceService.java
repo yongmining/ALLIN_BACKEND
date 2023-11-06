@@ -10,6 +10,8 @@ import com.allin.filmface.niceTable.dto.YoutubeNiceDTO;
 import com.allin.filmface.niceTable.entity.YoutubeNice;
 import com.allin.filmface.niceTable.repository.NiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -81,39 +83,75 @@ public class NiceService {
         return niceRepository.countByYoutube_YoutubeLink(youtubeLink);
     }
 
+//    public List<YoutubeDTO> getRecommendedVideosByEmotionAndAge(int memberNo) {
+//        Member member = memberRepository.findById(memberNo).orElse(null);
+//        if (member == null) {
+//            // 회원 정보가 없을 경우 처리 로직
+//            return Collections.emptyList();
+//        }
+//
+//        int memberAge = member.getMemberAge();
+//        int ageRangeStart = memberAge / 10 * 10;
+//        int ageRangeEnd = ageRangeStart + 9;
+//
+//        List<Object[]> results = niceRepository.findTop6YoutubeByEmotionAndAge(memberNo, ageRangeStart, ageRangeEnd);
+//
+//        // Object[] 결과를 YoutubeDTO로 변환
+//        return results.stream()
+//                .map(result -> {
+//                    YoutubeDTO dto = new YoutubeDTO();
+//                    dto.setYoutubeNo((Integer) result[0]);
+//                    dto.setYoutubeLink((String) result[1]);
+//                    dto.setYoutubeTitle((String) result[2]);
+//                    dto.setThumbnailUrl((String) result[3]);
+//                    dto.setNiceCount(((Long) result[4]).intValue());
+//                    dto.setEmotionNo((Integer) result[8]); // emotionNo 설정
+//
+//                    MemberSimpleDTO memberDTO = new MemberSimpleDTO();
+//                    memberDTO.setMemberNo((int) result[5]);
+//                    memberDTO.setMemberGender((String) result[6]);
+//                    memberDTO.setMemberAge((Integer) result[7]);
+//                    dto.setMember(memberDTO);
+//
+//                    return dto;
+//                })
+//                .collect(Collectors.toList());
+//    }
+
     public List<YoutubeDTO> getRecommendedVideosByEmotionAndAge(int memberNo) {
-        Member member = memberRepository.findById(memberNo).orElse(null);
-        if (member == null) {
-            // 회원 정보가 없을 경우 처리 로직
-            return Collections.emptyList();
-        }
+        // 상수를 선언하여 의미를 명확하게 합니다.
+        final int PAGE_SIZE = 6;
 
-        int memberAge = member.getMemberAge();
-        int ageRangeStart = memberAge / 10 * 10;
-        int ageRangeEnd = ageRangeStart + 9;
+        return memberRepository.findById(memberNo)
+                .map(member -> {
+                    int memberAge = member.getMemberAge();
+                    int ageRangeStart = memberAge / 10 * 10;
+                    int ageRangeEnd = ageRangeStart + 9;
 
-        List<Object[]> results = niceRepository.findTop6YoutubeByEmotionAndAge(memberNo, ageRangeStart, ageRangeEnd);
+                    Pageable topVideos = PageRequest.of(0, PAGE_SIZE);
+                    List<Object[]> results = niceRepository.findTopYoutubeByEmotionAndAge(memberNo, ageRangeStart, ageRangeEnd, topVideos);
 
-        // Object[] 결과를 YoutubeDTO로 변환
-        return results.stream()
-                .map(result -> {
-                    YoutubeDTO dto = new YoutubeDTO();
-                    dto.setYoutubeNo((Integer) result[0]);   // youtubeNo
-                    dto.setYoutubeLink((String) result[1]);  // youtubeLink
-                    dto.setYoutubeTitle((String) result[2]); // youtubeTitle
-                    dto.setThumbnailUrl((String) result[3]);     // thumbnailUrl 추가된 부분
-                    dto.setNiceCount(((Long) result[4]).intValue()); // niceCount
+                    return results.stream()
+                            .map(result -> {
+                                YoutubeDTO dto = new YoutubeDTO();
+                                dto.setYoutubeNo((Integer) result[0]);
+                                dto.setYoutubeLink((String) result[1]);
+                                dto.setYoutubeTitle((String) result[2]);
+                                dto.setThumbnailUrl((String) result[3]);
+                                dto.setNiceCount(((Long) result[4]).intValue());
 
-                    MemberSimpleDTO memberDTO = new MemberSimpleDTO(); // DTO
-                    memberDTO.setMemberNo((int) result[5]); // memberNo 변환
-                    memberDTO.setMemberGender((String) result[6]);
-                    memberDTO.setMemberAge((Integer) result[7]);
-                    dto.setMember(memberDTO);                 // member 필드 설정
+                                MemberSimpleDTO memberDTO = new MemberSimpleDTO();
+                                memberDTO.setMemberNo((int) result[5]);
+                                memberDTO.setMemberGender((String) result[6]);
+                                memberDTO.setMemberAge((Integer) result[7]);
+                                dto.setEmotionNo((Integer) result[8]);
+                                dto.setMember(memberDTO);
 
-                    return dto;
+                                return dto;
+                            })
+                            .collect(Collectors.toList());
                 })
-                .collect(Collectors.toList());
+                .orElse(Collections.emptyList()); // Optional의 orElse를 사용하여 회원 정보가 없을 경우 빈 리스트를 반환
     }
-
 
 }

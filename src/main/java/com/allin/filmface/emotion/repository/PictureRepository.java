@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface PictureRepository extends JpaRepository<Picture, Long> {
 
+public interface PictureRepository extends JpaRepository<Picture, Integer> {
 
-    // 멤버 하나에 사진 여러 개 연결되도록 하기 위해
-//    List<Picture> findByMemberNo(int member);
+    List<Picture> findByMember_MemberNo(int memberNo);
+
+    // 다른 필요한 커스텀 쿼리 메소드 추가 가능
 }

@@ -36,6 +36,7 @@ public class PictureController {
     }
 
     @PostMapping("/picture/upload")
+    @CrossOrigin(origins = {"http://127.0.0.1:3000", "http://127.0.0.1:5000"}, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, exposedHeaders = "Content-Type")
     public ResponseEntity<Map<String, Object>> uploadAndAnalyze(@RequestParam("file") MultipartFile multipartFile) {
         try {
             // 파일을 저장할 디렉토리 경로
@@ -74,20 +75,37 @@ public class PictureController {
 
             // Check the response status
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println(responseEntity.getBody());
-                // If the response is OK, you can get the JSON response as a map
                 Map<String, Object> results = responseEntity.getBody();
-                System.out.println(results);
-                System.out.println(results.get("results"));
+                Object result = results.get("results");
+                if (result instanceof List) {
+                    result = ((List<?>) result).get(0);
+                }
 
+                // Print the result.
+                System.out.println(result);
+
+                // ObjectMapper를 생성
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                // JSON 데이터를 Map으로 변환
+                Map<String, Object> resultMap = objectMapper.convertValue(result, Map.class);
+
+                // EmotionDTO 객체 생성 및 설정
                 EmotionDTO emotionDTOWithResults = new EmotionDTO();
-                emotionDTOWithResults.setEmotionResult(results.get("dominant_emotion").toString());
-                emotionDTOWithResults.setEmotionAge(results.get("age").toString());
-                emotionDTOWithResults.setEmotionGender(results.get("dominant_gender").toString());
-                PictureDTO pictureDTO = new PictureDTO();
-                pictureDTO.setImage(multipartFile.getBytes() );
-                return ResponseEntity.ok(results);
+                emotionDTOWithResults.setEmotionResult(resultMap.get("dominant_emotion").toString());
+                emotionDTOWithResults.setEmotionAge(resultMap.get("age").toString());
+                emotionDTOWithResults.setEmotionGender(resultMap.get("dominant_gender").toString());
 
+                // PictureDTO 객체 생성 및 설정
+                PictureDTO pictureDTO = new PictureDTO();
+                pictureDTO.setImage(multipartFile.getBytes());
+
+                // 이후 필요한 작업 수행 (예: 데이터베이스에 저장)
+                // ModelMapper 빈 등록 파트와
+                // EmotionDTO 및 PictureDTO를 데이터베이스에 저장
+                pictureService.savePictureWithEmotion(emotionDTOWithResults, pictureDTO);
+
+                return ResponseEntity.ok(results);
             } else {
                 // Handle the case when the response is not OK
                 System.out.println("Server returned an error response.");
