@@ -23,7 +23,6 @@ public class TalkRequestDTO {
 
     private LocalDateTime requestWriteDate;
     private String userMessage;
-    private int chatRequestCount;
 
     private TalkResponseDTO responseNo;
 }

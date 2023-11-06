@@ -41,8 +41,6 @@ public class TalkRequest {
     @Column(name = "USER_MESSAGE")
     private String userMessage;
 
-    @Column(name = "CHAT_REQUEST_COUNT")
-    private int chatRequestCount;
 
     @OneToOne(mappedBy = "talkRequest", fetch = FetchType.LAZY)
     @JsonBackReference

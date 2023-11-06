@@ -51,7 +51,6 @@ public class TalkController {
         dto.setUserType(talkRequest.getUserType());
         dto.setRequestWriteDate(talkRequest.getRequestWriteDate());
         dto.setUserMessage(talkRequest.getUserMessage());
-        dto.setChatRequestCount(talkRequest.getChatRequestCount());
 
         // Response 엔티티를 DTO로 매핑
         if (talkRequest.getTalkResponse() != null) {
