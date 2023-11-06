@@ -28,6 +28,12 @@ public class Emotion {
     @JoinColumn(name = "PICTURE_NO", referencedColumnName = "PICTURE_NO")
     @JsonBackReference
     private Picture picture;
+
+    public void setEmotionAge(String emotionAge) {
+    }
+
+    public void setEmotionGender(String emotionGender) {
+    }
     // 사진하나에 감정하나
     // Constructors, getters, and settersl
 

@@ -9,8 +9,6 @@ public interface GuestEmotionRepository extends JpaRepository<GuestEmotion, Long
 
     GuestEmotion findFirstByGuestNoOrderByGuestEmotionNoDesc(Integer guestNo);
 
-
-    List<GuestEmotion> findByGuestNo(Integer guestNo);
 }
 
 
