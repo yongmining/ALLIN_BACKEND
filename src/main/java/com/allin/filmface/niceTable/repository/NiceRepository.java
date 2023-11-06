@@ -4,6 +4,7 @@ import com.allin.filmface.choiceContents.youtube.entity.Youtube;
 import com.allin.filmface.niceTable.entity.Nice;
 import com.allin.filmface.niceTable.entity.YoutubeNice;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,14 +19,25 @@ public interface NiceRepository extends JpaRepository<YoutubeNice, Integer> {
 
 
 
-@Query("SELECT y.youtubeNo, y.youtubeLink, y.youtubeTitle, y.thumbnailUrl, COUNT(y.youtubeLink) as niceCount, m.memberNo, m.memberGender, m.memberAge FROM Youtube y " +
-        "JOIN y.emotion e " +
-        "JOIN YoutubeNice yn ON y.youtubeLink = yn.youtube.youtubeLink " +
-        "JOIN Member m ON m.memberNo = yn.member.memberNo " +
-        "WHERE e.emotionNo = (SELECT MAX(e2.emotionNo) FROM Emotion e2 WHERE e2.memberNo = :memberNo) " +
-        "AND m.memberAge BETWEEN :ageRangeStart AND :ageRangeEnd " +
-        "GROUP BY y.youtubeNo, y.youtubeLink, y.youtubeTitle, y.thumbnailUrl, m.memberNo, m.memberGender, m.memberAge " +
-        "ORDER BY COUNT(y.youtubeLink) DESC")
-    List<Object[]> findTop6YoutubeByEmotionAndAge(@Param("memberNo") int memberNo, @Param("ageRangeStart") int ageRangeStart, @Param("ageRangeEnd") int ageRangeEnd);
+//@Query("SELECT y.youtubeNo, y.youtubeLink, y.youtubeTitle, y.thumbnailUrl, COUNT(y.youtubeLink) as niceCount, m.memberNo, m.memberGender, m.memberAge FROM Youtube y " +
+//        "JOIN y.emotion e " +
+//        "JOIN YoutubeNice yn ON y.youtubeLink = yn.youtube.youtubeLink " +
+//        "JOIN Member m ON m.memberNo = yn.member.memberNo " +
+//        "WHERE e.emotionNo = (SELECT MAX(e2.emotionNo) FROM Emotion e2 WHERE e2.memberNo = :memberNo) " +
+//        "AND m.memberAge BETWEEN :ageRangeStart AND :ageRangeEnd " +
+//        "GROUP BY y.youtubeNo, y.youtubeLink, y.youtubeTitle, y.thumbnailUrl, m.memberNo, m.memberGender, m.memberAge " +
+//        "ORDER BY COUNT(y.youtubeLink) DESC")
+//    List<Object[]> findTop6YoutubeByEmotionAndAge(@Param("memberNo") int memberNo, @Param("ageRangeStart") int ageRangeStart, @Param("ageRangeEnd") int ageRangeEnd);
+
+
+    @Query("SELECT y.youtubeNo, y.youtubeLink, y.youtubeTitle, y.thumbnailUrl, COUNT(y.youtubeLink) as niceCount, m.memberNo, m.memberGender, m.memberAge, e.emotionNo FROM Youtube y " +
+            "JOIN y.emotion e " +
+            "JOIN YoutubeNice yn ON y.youtubeLink = yn.youtube.youtubeLink " +
+            "JOIN Member m ON m.memberNo = yn.member.memberNo " +
+            "WHERE e.emotionResult = (SELECT e2.emotionResult FROM Emotion e2 WHERE e2.memberNo = :memberNo AND e2.emotionNo = (SELECT MAX(e3.emotionNo) FROM Emotion e3 WHERE e3.memberNo = :memberNo)) " +
+            "AND m.memberAge BETWEEN :ageRangeStart AND :ageRangeEnd " +
+            "GROUP BY y.youtubeNo, y.youtubeLink, y.youtubeTitle, y.thumbnailUrl, m.memberNo, m.memberGender, m.memberAge, e.emotionNo " +
+            "ORDER BY COUNT(y.youtubeLink) DESC")
+    List<Object[]> findTopYoutubeByEmotionAndAge(@Param("memberNo") int memberNo, @Param("ageRangeStart") int ageRangeStart, @Param("ageRangeEnd") int ageRangeEnd, Pageable pageable);
 
 }
