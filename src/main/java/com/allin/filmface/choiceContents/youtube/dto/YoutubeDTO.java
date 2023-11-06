@@ -25,4 +25,6 @@ public class YoutubeDTO {
 
     private String thumbnailUrl;
 
+    private Integer emotionNo;
+
 }
