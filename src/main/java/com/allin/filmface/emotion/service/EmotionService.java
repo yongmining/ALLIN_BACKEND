@@ -1,13 +1,31 @@
 package com.allin.filmface.emotion.service;
 
 import com.allin.filmface.emotion.dto.EmotionDTO;
+import com.allin.filmface.emotion.entity.Emotion;
+import com.allin.filmface.emotion.repository.EmotionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmotionService {
+
+    @Autowired
+    private EmotionRepository emotionRepository;
+
+    public List<EmotionDTO> getEmotionsByMemberNo(Integer memberNo) {
+        List<Emotion> emotions = emotionRepository.findByMemberNo(memberNo);
+        return emotions.stream()
+                .map(e -> new EmotionDTO(
+                        e.getEmotionNo(),
+                        e.getEmotionResult(),
+                        null,
+                        null))
+                .collect(Collectors.toList());
+    }
 
     public List<EmotionDTO> analyzeEmotion(EmotionDTO emotionDTO) {
         List<EmotionDTO> emotions = new ArrayList<>();

@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface EmotionRepository extends JpaRepository<Emotion, Long> {
     Emotion findFirstByMemberNoOrderByEmotionNoDesc(Integer memberNo);
+    List<Emotion> findByMemberNo(Integer memberNo);
+  
     //List<Picture> findByMember_MemberNo(int memberNo);
 
     List<Emotion> findByEmotionResult(String emotionResult);
-
-    // 다른 필요한 커스텀 쿼리 메소드 추가 가능
 
 }
 

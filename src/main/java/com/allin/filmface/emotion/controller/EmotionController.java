@@ -3,6 +3,7 @@ package com.allin.filmface.emotion.controller;
 import com.allin.filmface.emotion.dto.EmotionDTO;
 import com.allin.filmface.emotion.dto.PictureDTO;
 import com.allin.filmface.emotion.entity.Picture;
+import com.allin.filmface.emotion.service.EmotionService;
 import com.allin.filmface.emotion.service.PictureService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,6 +32,14 @@ import java.util.Map;
 public class EmotionController {
 
     private final PictureService pictureService;
+    private  final EmotionService emotionService;
+
+    @GetMapping("/emotion/member/{memberNo}")
+    public ResponseEntity<List<EmotionDTO>> getEmotionsByMemberNo(@PathVariable Integer memberNo) {
+        List<EmotionDTO> emotions = emotionService.getEmotionsByMemberNo(memberNo);
+        return ResponseEntity.ok(emotions);
+
+    }
 
     @PostMapping("/emotion")
     @CrossOrigin(origins = {"http://127.0.0.1:3000", "http://127.0.0.1:5000"}, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, exposedHeaders = "Content-Type")
