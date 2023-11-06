@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface EmotionRepository extends JpaRepository<Emotion, Long> {
     Emotion findFirstByMemberNoOrderByEmotionNoDesc(Integer memberNo);
-    //List<Picture> findByMember_MemberNo(int memberNo);
+    List<Emotion> findByMemberNo(Integer memberNo);
 }
 
 
