@@ -48,6 +48,7 @@ import java.util.Optional;
 //    public void savePictureWithEmotion(EmotionDTO emotionDTOWithResults, PictureDTO pictureDTO) {
 //    }
 //}
+
 @Service
 public class PictureService {
 
@@ -69,9 +70,6 @@ public class PictureService {
         picture.setImage(pictureDTO.getImage());
         picture.setImageName(pictureDTO.getImageName());
 
-        // 멤버 번호 설정 (필요에 따라)
-        // picture.setMember(member);
-
         // 데이터베이스에 이미지 저장
         pictureRepository.save(picture);
 
@@ -81,7 +79,13 @@ public class PictureService {
         emotion.setEmotionAge(emotionDTO.getEmotionAge());
         emotion.setEmotionGender(emotionDTO.getEmotionGender());
 
+        // Picture와 Emotion 관계 설정 (Emotion이 Picture를 참조)
+        emotion.setPicture(picture);
+
         // 데이터베이스에 감정 정보 저장
         emotionRepository.save(emotion);
+    }
+
+    public void savePictureWithEmotion(Picture picture) {
     }
 }
