@@ -37,19 +37,19 @@ public class GuestMusicController {
             String query = "";
             switch (guestEmotionResult) {
                 case "Sad":
-                    query = "슬플때 듣기 좋은 노래 모음집";
+                    query = "슬플떄 들으면 힘이나는 노래";
                     break;
                 case "Angry":
-                    query = "잔잔한 노래";
+                    query = "잔잔한 노래모음";
                     break;
                 case "Neutral":
                 case "Happy":
-                    query = "신나는 노래";
+                    query = "신나는 노래모음집";
                     break;
                 case "Surprise":
                 case "Disgust":
                 case "Fear":
-                    query = "잔잔한 노래";
+                    query = "잔잔한 노래모음";
                     break;
                 default:
                     youtubeList = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.allin.filmface.emotion.entity;
 
+import com.allin.filmface.emotion.dto.PictureDTO;
 import com.allin.filmface.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
@@ -41,5 +42,11 @@ public class Picture {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
+    }
+
+    public void setEmotion(Emotion emotion) {
+    }
+
+    public void setPictureDTO(PictureDTO pictureDTO) {
     }
 }

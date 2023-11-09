@@ -2,9 +2,10 @@ package com.allin.filmface.emotion.controller;
 
 import com.allin.filmface.emotion.dto.EmotionDTO;
 import com.allin.filmface.emotion.dto.PictureDTO;
+import com.allin.filmface.emotion.entity.Emotion;
 import com.allin.filmface.emotion.entity.Picture;
 import com.allin.filmface.emotion.service.PictureService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +17,21 @@ import org.springframework.core.ParameterizedTypeReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
 public class PictureController {
 
     private final PictureService pictureService;
+    private final ModelMapper modelMapper;
 
-    public PictureController(PictureService pictureService) {
+    public PictureController(PictureService pictureService, ModelMapper modelMapper) {
         this.pictureService = pictureService;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping("/picture/{id}")
@@ -56,7 +61,7 @@ public class PictureController {
 
             // 이미지 경로를 Flask 서버로 전송
             Map<String, Object> requestData = new HashMap<>();
-            requestData.put("img_path", filePath); // 이미지 파일의 실제 경로를 설정
+            requestData.put("img_path", filePath);
             requestData.put("actions", Arrays.asList("age", "gender", "emotion", "race"));
 
             // Define the REST endpoint URL for http://127.0.0.1:5000/analyze
@@ -74,42 +79,37 @@ public class PictureController {
             ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(serverUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {});
 
             // Check the response status
+            System.out.println("Response status code: " + responseEntity.getStatusCode());
+
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 Map<String, Object> results = responseEntity.getBody();
                 Object result = results.get("results");
                 if (result instanceof List) {
                     result = ((List<?>) result).get(0);
                 }
-
-                // Print the result.
                 System.out.println(result);
 
-                // ObjectMapper를 생성
-                ObjectMapper objectMapper = new ObjectMapper();
-
-                // JSON 데이터를 Map으로 변환
-                Map<String, Object> resultMap = objectMapper.convertValue(result, Map.class);
-
-                // EmotionDTO 객체 생성 및 설정
-                EmotionDTO emotionDTOWithResults = new EmotionDTO();
-                emotionDTOWithResults.setEmotionResult(resultMap.get("dominant_emotion").toString());
-                emotionDTOWithResults.setEmotionAge(resultMap.get("age").toString());
-                emotionDTOWithResults.setEmotionGender(resultMap.get("dominant_gender").toString());
+                // ModelMapper를 사용하여 JSON 데이터를 EmotionDTO로 변환
+                EmotionDTO emotionDTO = modelMapper.map(result, EmotionDTO.class);
 
                 // PictureDTO 객체 생성 및 설정
                 PictureDTO pictureDTO = new PictureDTO();
                 pictureDTO.setImage(multipartFile.getBytes());
 
+                // EmotionDTO를 엔티티 객체로 매핑
+                Emotion emotion = modelMapper.map(emotionDTO, Emotion.class);
+
+                // Picture 엔티티 생성
+                Picture picture = new Picture();
+                picture.setEmotion(emotion);
+                picture.setPictureDTO(pictureDTO);
+
                 // 이후 필요한 작업 수행 (예: 데이터베이스에 저장)
-                // ModelMapper 빈 등록 파트와
-                // EmotionDTO 및 PictureDTO를 데이터베이스에 저장
-                pictureService.savePictureWithEmotion(emotionDTOWithResults, pictureDTO);
+                pictureService.savePictureWithEmotion(picture);
 
                 return ResponseEntity.ok(results);
             } else {
-                // Handle the case when the response is not OK
-                System.out.println("Server returned an error response.");
-                return ResponseEntity.internalServerError().build();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid response from Flask server.");
             }
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to analyze picture.", e);

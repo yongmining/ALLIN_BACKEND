@@ -24,6 +24,15 @@ public class Emotion {
     @Column(name = "MEMBER_NO")
     private Integer memberNo;
 
+
+    @Column(name = "EMOTION_AGE")
+    private String emotionAge;
+
+    @Column(name = "EMOTION_GENDER")
+    private String emotionGender;
+
+
+
     @OneToOne
     @JoinColumn(name = "PICTURE_NO", referencedColumnName = "PICTURE_NO")
     @JsonBackReference
