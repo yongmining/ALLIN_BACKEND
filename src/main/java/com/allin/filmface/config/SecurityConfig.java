@@ -26,16 +26,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
+        http.csrf().disable()
                 .authorizeRequests()
+                // 기존 permitAll() 설정된 antMatchers
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/api/v1/login/**").permitAll()
                 .antMatchers("/api/v1/logout").permitAll()
                 .antMatchers("/api/v1/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/swagger-ui/index.html", "/swagger/**", "/v1/api-docs", "/swagger-resources/**", "/webjars/**").permitAll()
                 .antMatchers("/api/v1/emotion/**").permitAll()
                 .antMatchers("/api/v1/picture/**").permitAll()
+
+
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
