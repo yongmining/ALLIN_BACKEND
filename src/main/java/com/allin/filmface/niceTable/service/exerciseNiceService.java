@@ -62,7 +62,7 @@ public class exerciseNiceService {
         }
 
         Long currentNiceCount = exerciseNiceRepository.countByExercise_ExerciseLink(exerciseNiceDTO.getExerciseLink());
-        exerciseRepository.updateNiceCountByLink(exerciseNiceDTO.getExerciseLink(), currentNiceCount.intValue());
+        exerciseRepository.updateNiceCountByLink(exerciseNiceDTO.getExerciseLink());
     }
 
     public Long getNiceCountForExercise(String exerciseLink) {

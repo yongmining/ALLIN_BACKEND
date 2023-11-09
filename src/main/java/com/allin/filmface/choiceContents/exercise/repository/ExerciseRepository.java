@@ -26,8 +26,10 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     void decrementNiceCountByLink(@Param("exerciseLink") String exerciseLink);
 
     @Modifying
-    @Query("UPDATE Exercise e SET e.niceCount = :count WHERE e.exerciseLink = :exerciseLink")
-    void updateNiceCountByLink(@Param("exerciseLink") String exerciseLink, @Param("count") Integer count);
+    @Query("UPDATE Exercise e SET e.niceCount = (SELECT COUNT(en) FROM ExerciseNice en WHERE en.exercise.exerciseLink = e.exerciseLink) WHERE e.exerciseLink = :exerciseLink")
+    void updateNiceCountByLink(@Param("exerciseLink") String exerciseLink);
+
+
 
     Optional<Exercise> findByExerciseLink(String exerciseLink);
 }

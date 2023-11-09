@@ -27,8 +27,8 @@ public interface MusicRepository extends JpaRepository<Music, Integer> {
     void decrementNiceCountByLink(@Param("musicLink") String musicLink);
 
     @Modifying
-    @Query("UPDATE Music m SET m.niceCount = ?2 WHERE m.musicLink = ?1")
-    void updateNiceCountByLink(String musicLink, int niceCount);
+    @Query("UPDATE Music m SET m.niceCount = (SELECT COUNT(mn) FROM MusicNice mn WHERE mn.music.musicLink = m.musicLink) WHERE m.musicLink = :musicLink")
+    void updateNiceCountByLink(@Param("musicLink") String musicLink);
     Optional<Music> findByMusicLink(String musicLink);
 
 }

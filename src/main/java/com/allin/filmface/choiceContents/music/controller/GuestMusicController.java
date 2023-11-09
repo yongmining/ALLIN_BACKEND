@@ -37,7 +37,7 @@ public class GuestMusicController {
             String query = "";
             switch (guestEmotionResult) {
                 case "Sad":
-                    query = "슬픈 노래";
+                    query = "슬플때 듣기 좋은 노래 모음집";
                     break;
                 case "Angry":
                     query = "잔잔한 노래";
