@@ -22,8 +22,8 @@ public class EmotionService {
                 .map(e -> new EmotionDTO(
                         e.getEmotionNo(),
                         e.getEmotionResult(),
-                        e.getEmotionAge(),
-                        e.getEmotionGender()))
+                        null,
+                        null))
                 .collect(Collectors.toList());
     }
 

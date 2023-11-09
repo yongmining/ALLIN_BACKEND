@@ -1,10 +1,14 @@
 package com.allin.filmface.emotion.controller;
 
+import com.allin.filmface.common.ResponseDTO;
 import com.allin.filmface.emotion.dto.EmotionDTO;
 import com.allin.filmface.emotion.dto.PictureDTO;
 import com.allin.filmface.emotion.entity.Emotion;
 import com.allin.filmface.emotion.entity.Picture;
 import com.allin.filmface.emotion.service.PictureService;
+import com.allin.filmface.member.controller.MemberController;
+import com.allin.filmface.member.dto.MemberDTO;
+import com.allin.filmface.member.entity.Member;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +31,11 @@ import java.util.Map;
 public class PictureController {
 
     private final PictureService pictureService;
-    private final ModelMapper modelMapper;
+    private final MemberController memberController; // MemberController 주입
 
-    public PictureController(PictureService pictureService, ModelMapper modelMapper) {
+    public PictureController(PictureService pictureService, MemberController memberController) {
         this.pictureService = pictureService;
-        this.modelMapper = modelMapper;
+        this.memberController = memberController; // MemberController 주입
     }
 
     @GetMapping("/picture/{id}")
@@ -82,37 +86,77 @@ public class PictureController {
             System.out.println("Response status code: " + responseEntity.getStatusCode());
 
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                //Map<String, Object> results = responseEntity.getBody();
+                //Map<String, String> result = (Map<String, String>) results.get("results");
+                //Object result = results.get("results");
                 Map<String, Object> results = responseEntity.getBody();
                 Object result = results.get("results");
+                System.out.println(results);
                 if (result instanceof List) {
-                    result = ((List<?>) result).get(0);
-                }
+                result = ((List<?>) result).get(0);
+
                 System.out.println(result);
 
-                // ModelMapper를 사용하여 JSON 데이터를 EmotionDTO로 변환
-                EmotionDTO emotionDTO = modelMapper.map(result, EmotionDTO.class);
 
-                // PictureDTO 객체 생성 및 설정
-                PictureDTO pictureDTO = new PictureDTO();
-                pictureDTO.setImage(multipartFile.getBytes());
 
-                // EmotionDTO를 엔티티 객체로 매핑
-                Emotion emotion = modelMapper.map(emotionDTO, Emotion.class);
+                // Extract emotion data from the JSON response
+                    // Extract emotion data from the JSON response
+                String dominantEmotion = (String) ((Map<String, Object>) result).get("emotion.dominant_emotion");
+                int emotionAge = (int) ((Map<String, Object>) result).get("emotion.age");
+                String emotionGender = (String) ((Map<String, Object>) result).get("emotion.dominant_gender");
 
-                // Picture 엔티티 생성
-                Picture picture = new Picture();
-                picture.setEmotion(emotion);
-                picture.setPictureDTO(pictureDTO);
+                // Create an EmotionDTO object and set its properties
 
-                // 이후 필요한 작업 수행 (예: 데이터베이스에 저장)
-                pictureService.savePictureWithEmotion(picture);
+                // Create an EmotionDTO object and set its propertiesD
+                System.out.println("dominant_emotion: " + dominantEmotion);
+                System.out.println("age: " + emotionAge);
+                System.out.println("dominant_gender: " + emotionGender);
+                EmotionDTO emotionDTO = new EmotionDTO();
+                emotionDTO.setEmotionResult(dominantEmotion);
+                emotionDTO.setEmotionAge(String.valueOf(emotionAge));
+                emotionDTO.setEmotionGender(emotionGender);
 
-                return ResponseEntity.ok(results);
-            } else {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid response from Flask server.");
+                // Print the emotion result, emotion age, and emotion gender
+                //System.out.println("EmotionResult = " + emotionDTO.getEmotionResult());
+                //System.out.println("EmotionAge = " + emotionDTO.getEmotionAge());
+                //System.out.println("EmotionGender = " + emotionDTO.getEmotionGender());
+
             }
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to analyze picture.", e);
+
+
+            // 직접 딕셔너리 값에서 값을 추출하여 EmotionDTO에 설정
+
+            // 멤버 정보 설정
+            MemberDTO memberDTO = new MemberDTO();
+            memberDTO.setSocialLogin("kakao");
+            memberDTO.setSocialId("10");
+
+            // 멤버 정보를 통해 Member 엔티티 검색
+            //ResponseEntity<ResponseDTO> member = memberController.findBySocialId(memberDTO.getSocialLogin(), memberDTO.getSocialId);
+            //Member memberEntity = member.getBody();
+
+            // Picture 엔티티 생성
+            Picture picture = new Picture();
+            //picture.setMember(memberEntity);
+            picture.setImageName(originalFileName);
+
+            // 저장할 이미지 데이터 설정
+            byte[] imageData = multipartFile.getBytes();
+            picture.setImage(imageData);
+
+            // 이후 필요한 작업 수행 (예: 데이터베이스에 저장)
+            pictureService.savePictureWithEmotion(picture);
+
+            return ResponseEntity.ok(results);
+        } else {
+            throw new ResponseStatusException(responseEntity.getStatusCode(), "Invalid response from Flask server.");
         }
+    } catch (IOException e) {
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to analyze picture.", e);
+    }
+}
+
+    private Map<String, Object> result() {
+        return new HashMap<>();
     }
 }

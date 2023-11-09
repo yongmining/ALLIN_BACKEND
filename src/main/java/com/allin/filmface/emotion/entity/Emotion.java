@@ -24,15 +24,6 @@ public class Emotion {
     @Column(name = "MEMBER_NO")
     private Integer memberNo;
 
-
-    @Column(name = "EMOTION_AGE")
-    private String emotionAge;
-
-    @Column(name = "EMOTION_GENDER")
-    private String emotionGender;
-
-
-
     @OneToOne
     @JoinColumn(name = "PICTURE_NO", referencedColumnName = "PICTURE_NO")
     @JsonBackReference
@@ -46,8 +37,8 @@ public class Emotion {
     // 사진하나에 감정하나
     // Constructors, getters, and settersl
 
-    //public void setEmotionResult(String emotionResult) {
+    public void setEmotionResult(String emotionResult) {
     //    this.emotionResult = emotionResult;
-    //}
+    }
 }
 

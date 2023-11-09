@@ -18,4 +18,16 @@ public class EmotionDTO {
     private String emotionResult;
     private String emotionAge;
     private String emotionGender;
+
+    public void setEmotionResult(String emotionResult) {
+        this.emotionResult = emotionResult;
+    }
+
+    public void setEmotionAge(String emotionAge) {
+        this.emotionAge = emotionAge;
+    }
+
+    public void setEmotionGender(String emotionGender) {
+        this.emotionGender = emotionGender;
+    }
 }

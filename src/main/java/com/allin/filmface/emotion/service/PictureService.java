@@ -47,45 +47,52 @@ import java.util.Optional;
 //
 //    public void savePictureWithEmotion(EmotionDTO emotionDTOWithResults, PictureDTO pictureDTO) {
 //    }
-//}
+//}\
 
 @Service
 public class PictureService {
-
     private final PictureRepository pictureRepository;
     private final EmotionRepository emotionRepository;
+    private final MemberRepository memberRepository;
 
-    public PictureService(PictureRepository pictureRepository, EmotionRepository emotionRepository) {
+    public PictureService(PictureRepository pictureRepository, EmotionRepository emotionRepository, MemberRepository memberRepository) {
         this.pictureRepository = pictureRepository;
         this.emotionRepository = emotionRepository;
+        this.memberRepository = memberRepository;
     }
 
     public Picture findById(Long id) {
         return pictureRepository.findById(Math.toIntExact(id)).orElseThrow(() -> new NoSuchElementException("Picture not found."));
     }
 
-    public void savePictureWithEmotion(EmotionDTO emotionDTO, PictureDTO pictureDTO) {
-        // PictureDTO를 Picture 엔티티로 변환
+    // 이미지를 저장하고 EmotionDTO, PictureDTO를 사용하여 데이터베이스에 저장하는 메소드
+    public Picture savePictureWithEmotion(EmotionDTO emotionDTO, PictureDTO pictureDTO, MemberDTO memberDTO) {
         Picture picture = new Picture();
         picture.setImage(pictureDTO.getImage());
         picture.setImageName(pictureDTO.getImageName());
 
-        // 데이터베이스에 이미지 저장
-        pictureRepository.save(picture);
+        // 이미지를 저장하고 저장된 엔티티를 반환
+        picture = pictureRepository.save(picture);
 
-        // EmotionDTO를 Emotion 엔티티로 변환
         Emotion emotion = new Emotion();
         emotion.setEmotionResult(emotionDTO.getEmotionResult());
         emotion.setEmotionAge(emotionDTO.getEmotionAge());
         emotion.setEmotionGender(emotionDTO.getEmotionGender());
 
-        // Picture와 Emotion 관계 설정 (Emotion이 Picture를 참조)
         emotion.setPicture(picture);
 
-        // 데이터베이스에 감정 정보 저장
-        emotionRepository.save(emotion);
+        // Member 엔티티 검색
+
+
+        // Set the Member 엔티티 in the Picture 엔티티
+
+
+        // Save the picture 엔티티 in the repository and return
+        return pictureRepository.save(picture);
     }
 
+    // 이미지를 저장하는 메소드 (이미지만 저장할 경우)
     public void savePictureWithEmotion(Picture picture) {
+        pictureRepository.save(picture);
     }
 }
