@@ -62,7 +62,7 @@ public class musicNiceService {
         }
 
         Long currentNiceCount = musicNiceRepository.countByMusic_MusicLink(musicNiceDTO.getMusicLink());
-        musicRepository.updateNiceCountByLink(musicNiceDTO.getMusicLink(), currentNiceCount.intValue());
+        musicRepository.updateNiceCountByLink(musicNiceDTO.getMusicLink());
     }
 
     public Long getNiceCountForMusic(String musicLink) {

@@ -77,7 +77,11 @@ public class NiceService {
 
         // 실시간으로 Youtube 테이블의 niceCount를 업데이트
         Long currentNiceCount = niceRepository.countByYoutube_YoutubeLink(youtubeNiceDTO.getYoutubeLink());
-        youtubeRepository.updateNiceCountByLink(youtubeNiceDTO.getYoutubeLink(), currentNiceCount.intValue());
+        youtubeRepository.updateNiceCountByLink(youtubeNiceDTO.getYoutubeLink());
+
+        //        youtubeRepository.updateNiceCountByLink(youtubeNiceDTO.getYoutubeLink(), currentNiceCount.intValue());
+        //        youtubeRepository.updateNiceCountByLink(youtubeNiceDTO.getYoutubeLink(), currentNiceCount);
+
     }
     public Long getNiceCountForYoutube(String youtubeLink) {
         return niceRepository.countByYoutube_YoutubeLink(youtubeLink);
