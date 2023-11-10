@@ -1,22 +1,23 @@
 package com.allin.filmface.emotion.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.allin.filmface.emotion.entity.Picture;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 public class PictureDTO {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int pictureNo;
 
-    private byte[] image;  // 변경: InputStream 대신 byte[] 사용
+    private Long pictureNo;  // Use Long instead of int for ID
+    private byte[] image;
     private String imageName;
-    private int memberNo;
+    private Long memberNo;  // Use Long instead of int for memberNo
+
+    private EmotionDTO emotion;  // Embed EmotionDTO in PictureDTO
+
+
+
+    // Setter and Getter methods
 }

@@ -159,4 +159,8 @@ public class MemberController {
 
         return ResponseEntity.noContent().build();
     }
+
+    public int getLoggedInMemberNo() {
+        return 0;
+    }
 }

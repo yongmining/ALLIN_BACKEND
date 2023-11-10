@@ -1,15 +1,17 @@
 package com.allin.filmface.emotion.entity;
 
+import com.allin.filmface.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 @ToString
-@Entity(name= "Emotion")
+@Entity(name = "Emotion")
 @Table(name = "EMOTION")
 public class Emotion {
 
@@ -28,17 +30,34 @@ public class Emotion {
     @JoinColumn(name = "PICTURE_NO", referencedColumnName = "PICTURE_NO")
     @JsonBackReference
     private Picture picture;
+    private String emotionAge;
+    private String emotionGender;
+    public Emotion(String emotionResult, String emotionAge, String emotionGender, Picture picture) {
+    }
+
 
     public void setEmotionAge(String emotionAge) {
+        this.emotionAge = emotionAge;
     }
 
     public void setEmotionGender(String emotionGender) {
+        this.emotionGender = emotionGender;
     }
-    // 사진하나에 감정하나
-    // Constructors, getters, and settersl
+
+
+    public String getEmotionAge() {
+        return this.emotionAge;
+    }
+
+    public String getEmotionGender() {
+        return this.emotionGender;
+    }
 
     public void setEmotionResult(String emotionResult) {
-    //    this.emotionResult = emotionResult;
+        this.emotionResult = emotionResult;
+    }
+
+
+    public void setMember(Member member) {
     }
 }
-

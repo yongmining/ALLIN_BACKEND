@@ -1,9 +1,8 @@
 package com.allin.filmface.emotion.dto;
 
+import com.allin.filmface.emotion.entity.Emotion;
+import com.allin.filmface.emotion.service.EmotionService;
 import lombok.*;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,22 +11,28 @@ import javax.persistence.GenerationType;
 @ToString
 public class EmotionDTO {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int emotionNo;
-
+    private Long emotionNo;
     private String emotionResult;
     private String emotionAge;
     private String emotionGender;
 
-    public void setEmotionResult(String emotionResult) {
-        this.emotionResult = emotionResult;
+    // Constructor to convert Emotion to EmotionDTO
+    public EmotionDTO(Emotion emotion, EmotionService emotionService) {
+        this.emotionNo = (long) emotion.getEmotionNo();
+        this.emotionResult = emotion.getEmotionResult();
+        this.emotionAge = emotionService.getEmotionAge(emotion);
+        this.emotionGender = emotionService.getEmotionGender(emotion);
     }
 
-    public void setEmotionAge(String emotionAge) {
-        this.emotionAge = emotionAge;
+    // Create an Emotion entity from EmotionDTO
+    public Emotion getEmotion() {
+        Emotion emotion = new Emotion();
+        emotion.setEmotionNo(this.emotionNo.intValue());
+        emotion.setEmotionResult(this.emotionResult);
+        emotion.setEmotionAge(this.emotionAge);
+        emotion.setEmotionGender(this.emotionGender);
+        return emotion;
     }
 
-    public void setEmotionGender(String emotionGender) {
-        this.emotionGender = emotionGender;
-    }
+    // Setter and Getter methods
 }

@@ -48,4 +48,9 @@ public class Member {
     @Column(name = "REFRESH_TOKEN_EXPIRE_DATE", nullable = false)
     private long refreshTokenExpireDate;
 
+    public void setId(Long id) {
+    }
+
+    public void setName(String name) {
+    }
 }

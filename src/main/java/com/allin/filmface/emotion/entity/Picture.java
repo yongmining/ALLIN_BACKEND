@@ -46,4 +46,7 @@ public class Picture {
 
     public void setPictureDTO(PictureDTO pictureDTO) {
     }
+
+    public void setMemberNo(Long memberNo) {
+    }
 }
