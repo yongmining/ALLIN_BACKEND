@@ -79,48 +79,12 @@ public class NiceService {
         Long currentNiceCount = niceRepository.countByYoutube_YoutubeLink(youtubeNiceDTO.getYoutubeLink());
         youtubeRepository.updateNiceCountByLink(youtubeNiceDTO.getYoutubeLink());
 
-        //        youtubeRepository.updateNiceCountByLink(youtubeNiceDTO.getYoutubeLink(), currentNiceCount.intValue());
-        //        youtubeRepository.updateNiceCountByLink(youtubeNiceDTO.getYoutubeLink(), currentNiceCount);
-
     }
     public Long getNiceCountForYoutube(String youtubeLink) {
         return niceRepository.countByYoutube_YoutubeLink(youtubeLink);
     }
 
-//    public List<YoutubeDTO> getRecommendedVideosByEmotionAndAge(int memberNo) {
-//        Member member = memberRepository.findById(memberNo).orElse(null);
-//        if (member == null) {
-//            // 회원 정보가 없을 경우 처리 로직
-//            return Collections.emptyList();
-//        }
-//
-//        int memberAge = member.getMemberAge();
-//        int ageRangeStart = memberAge / 10 * 10;
-//        int ageRangeEnd = ageRangeStart + 9;
-//
-//        List<Object[]> results = niceRepository.findTop6YoutubeByEmotionAndAge(memberNo, ageRangeStart, ageRangeEnd);
-//
-//        // Object[] 결과를 YoutubeDTO로 변환
-//        return results.stream()
-//                .map(result -> {
-//                    YoutubeDTO dto = new YoutubeDTO();
-//                    dto.setYoutubeNo((Integer) result[0]);
-//                    dto.setYoutubeLink((String) result[1]);
-//                    dto.setYoutubeTitle((String) result[2]);
-//                    dto.setThumbnailUrl((String) result[3]);
-//                    dto.setNiceCount(((Long) result[4]).intValue());
-//                    dto.setEmotionNo((Integer) result[8]); // emotionNo 설정
-//
-//                    MemberSimpleDTO memberDTO = new MemberSimpleDTO();
-//                    memberDTO.setMemberNo((int) result[5]);
-//                    memberDTO.setMemberGender((String) result[6]);
-//                    memberDTO.setMemberAge((Integer) result[7]);
-//                    dto.setMember(memberDTO);
-//
-//                    return dto;
-//                })
-//                .collect(Collectors.toList());
-//    }
+
 
     public List<YoutubeDTO> getRecommendedVideosByEmotionAndAge(int memberNo) {
         // 상수를 선언하여 의미를 명확하게 합니다.

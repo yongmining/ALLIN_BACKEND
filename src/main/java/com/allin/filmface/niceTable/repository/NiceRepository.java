@@ -19,16 +19,6 @@ public interface NiceRepository extends JpaRepository<YoutubeNice, Integer> {
 
 
 
-//@Query("SELECT y.youtubeNo, y.youtubeLink, y.youtubeTitle, y.thumbnailUrl, COUNT(y.youtubeLink) as niceCount, m.memberNo, m.memberGender, m.memberAge FROM Youtube y " +
-//        "JOIN y.emotion e " +
-//        "JOIN YoutubeNice yn ON y.youtubeLink = yn.youtube.youtubeLink " +
-//        "JOIN Member m ON m.memberNo = yn.member.memberNo " +
-//        "WHERE e.emotionNo = (SELECT MAX(e2.emotionNo) FROM Emotion e2 WHERE e2.memberNo = :memberNo) " +
-//        "AND m.memberAge BETWEEN :ageRangeStart AND :ageRangeEnd " +
-//        "GROUP BY y.youtubeNo, y.youtubeLink, y.youtubeTitle, y.thumbnailUrl, m.memberNo, m.memberGender, m.memberAge " +
-//        "ORDER BY COUNT(y.youtubeLink) DESC")
-//    List<Object[]> findTop6YoutubeByEmotionAndAge(@Param("memberNo") int memberNo, @Param("ageRangeStart") int ageRangeStart, @Param("ageRangeEnd") int ageRangeEnd);
-
 
     @Query("SELECT y.youtubeNo, y.youtubeLink, y.youtubeTitle, y.thumbnailUrl, COUNT(y.youtubeLink) as niceCount, m.memberNo, m.memberGender, m.memberAge, e.emotionNo FROM Youtube y " +
             "JOIN y.emotion e " +

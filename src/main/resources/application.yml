@@ -51,17 +51,17 @@
 
               youtube:
                 api:
-#                  key: AIzaSyAk_57Y9J1-SoqbiQ0WTC2qUQLTA4RgiLgz
+                  key: AIzaSyAk_57Y9J1-SoqbiQ0WTC2qUQLTA4RgiLgz
 #                  key: AIzaSyD5WwMWmhTd6Du6ZbpJUikO4fUjA8s7taY
 #                  key: AIzaSyDDk_04Z4oes3XYR7R79PDNzlPY4UzAOMw
-                    key: AIzaSyD3_n0_wK1nV1KLr072cAmqCwcqnbFBpbI
+#                    key: AIzaSyD3_n0_wK1nV1KLr072cAmqCwcqnbFBpbI
         # mybatis config
         youtube:
           api:
-#            key: AIzaSyD5WwMWmhTd6Du6ZbpJUikO4fUjA8s7taY
+            key: AIzaSyD5WwMWmhTd6Du6ZbpJUikO4fUjA8s7taY
 #            key: AIzaSyAk_57Y9J1-SoqbiQ0WTC2qUQLTA4RgiLg
 #             key: AIzaSyDDk_04Z4oes3XYR7R79PDNzlPY4UzAOMw
-              key: AIzaSyD3_n0_wK1nV1KLr072cAmqCwcqnbFBpbI
+#              key: AIzaSyD3_n0_wK1nV1KLr072cAmqCwcqnbFBpbI
 
         mybatis:
           mapper-locations: mybatis/*.xml

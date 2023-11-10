@@ -19,9 +19,6 @@ public interface YoutubeRepository extends JpaRepository<Youtube, Integer> {
 
     List<Youtube> findByYoutubeTitleAndMemberNo(String youtubeTitle, Integer memberNo);
 
-//    @Query("SELECT SUM(y.niceCount) FROM Youtube y WHERE y.youtubeLink = :youtubeLink")
-//    Long findTotalNiceCountByYoutubeLink(@Param("youtubeLink") String youtubeLink);
-
     @Query("SELECT SUM(y.niceCount) FROM Youtube y WHERE y.youtubeLink = :youtubeLink")
     Integer findTotalNiceCountByYoutubeLink(@Param("youtubeLink") String youtubeLink);
 
@@ -34,14 +31,9 @@ public interface YoutubeRepository extends JpaRepository<Youtube, Integer> {
     @Query("UPDATE Youtube y SET y.niceCount = y.niceCount - 1 WHERE y.youtubeLink = :youtubeLink")
     void decrementNiceCountByLink(@Param("youtubeLink") String youtubeLink);
 
-//    @Modifying
-//    @Query("UPDATE Youtube y SET y.niceCount = :count WHERE y.youtubeLink = :youtubeLink")
-//    void updateNiceCountByLink(@Param("youtubeLink") String youtubeLink, @Param("count") Integer count);
-
     @Modifying
     @Query("UPDATE Youtube y SET y.niceCount = (SELECT COUNT(yn) FROM YoutubeNice yn WHERE yn.youtube.youtubeLink = y.youtubeLink) WHERE y.youtubeLink = :youtubeLink")
     void updateNiceCountByLink(@Param("youtubeLink") String youtubeLink);
-
     Optional<Youtube> findByYoutubeLink(String youtubeLink);
 }
 
